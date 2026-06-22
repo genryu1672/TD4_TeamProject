@@ -3,20 +3,24 @@
   "WorkspaceRootPath": "C:\\Users\\k023g\\TD4_2\u56DE\u76EE\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{BEDD47E1-972B-2D19-EC5F-14F328FA8362}|Assembly-CSharp.csproj|c:\\users\\k023g\\td4_2\u56DE\u76EE\\assets\\scripts\\map\\gamemanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{BEDD47E1-972B-2D19-EC5F-14F328FA8362}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\map\\gamemanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{BEDD47E1-972B-2D19-EC5F-14F328FA8362}|Assembly-CSharp.csproj|C:\\Users\\k023g\\TD4_2\u56DE\u76EE\\assets\\scripts\\wall\\wallmover.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BEDD47E1-972B-2D19-EC5F-14F328FA8362}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\wall\\wallmover.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BEDD47E1-972B-2D19-EC5F-14F328FA8362}|Assembly-CSharp.csproj|C:\\Users\\k023g\\TD4_2\u56DE\u76EE\\assets\\scripts\\player\\playercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BEDD47E1-972B-2D19-EC5F-14F328FA8362}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\player\\playercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{BEDD47E1-972B-2D19-EC5F-14F328FA8362}|Assembly-CSharp.csproj|c:\\users\\k023g\\td4_2\u56DE\u76EE\\assets\\scripts\\map\\mapgenerator.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{BEDD47E1-972B-2D19-EC5F-14F328FA8362}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\map\\mapgenerator.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{BEDD47E1-972B-2D19-EC5F-14F328FA8362}|Assembly-CSharp.csproj|C:\\Users\\k023g\\TD4_2\u56DE\u76EE\\assets\\scripts\\player\\simplecamerafollow.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{BEDD47E1-972B-2D19-EC5F-14F328FA8362}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\player\\simplecamerafollow.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{BEDD47E1-972B-2D19-EC5F-14F328FA8362}|Assembly-CSharp.csproj|C:\\Users\\k023g\\TD4_2\u56DE\u76EE\\assets\\scripts\\map\\gamemanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BEDD47E1-972B-2D19-EC5F-14F328FA8362}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\map\\gamemanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{BEDD47E1-972B-2D19-EC5F-14F328FA8362}|Assembly-CSharp.csproj|C:\\Users\\k023g\\TD4_2\u56DE\u76EE\\assets\\scripts\\player\\playercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{BEDD47E1-972B-2D19-EC5F-14F328FA8362}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\player\\playercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{BEDD47E1-972B-2D19-EC5F-14F328FA8362}|Assembly-CSharp.csproj|C:\\Users\\k023g\\TD4_2\u56DE\u76EE\\assets\\scripts\\player\\simplecamerafollow.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BEDD47E1-972B-2D19-EC5F-14F328FA8362}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\player\\simplecamerafollow.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -26,41 +30,62 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 1,
+          "SelectedChildIndex": 3,
           "Children": [
             {
               "$type": "Bookmark",
               "Name": "ST:128:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
             },
             {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{eefa5220-e298-11d0-8f78-00a0c9110057}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{cce594b6-0c39-4442-ba28-10c64ac7e89f}"
+            },
+            {
               "$type": "Document",
               "DocumentIndex": 0,
+              "Title": "WallMover.cs",
+              "DocumentMoniker": "C:\\Users\\k023g\\TD4_2\u56DE\u76EE\\Assets\\Scripts\\Wall\\WallMover.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\Wall\\WallMover.cs",
+              "ToolTip": "C:\\Users\\k023g\\TD4_2\u56DE\u76EE\\Assets\\Scripts\\Wall\\WallMover.cs",
+              "RelativeToolTip": "Assets\\Scripts\\Wall\\WallMover.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABsAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-19T07:09:39.742Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
               "Title": "GameManager.cs",
               "DocumentMoniker": "C:\\Users\\k023g\\TD4_2\u56DE\u76EE\\Assets\\Scripts\\Map\\GameManager.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Map\\GameManager.cs",
               "ToolTip": "C:\\Users\\k023g\\TD4_2\u56DE\u76EE\\Assets\\Scripts\\Map\\GameManager.cs",
               "RelativeToolTip": "Assets\\Scripts\\Map\\GameManager.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAB0AAAAyAAAAAAAAAA==",
+              "ViewState": "AgIAAB8AAAAAAAAAAAAgwCoAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-06-19T06:35:03.873Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 2,
               "Title": "MapGenerator.cs",
               "DocumentMoniker": "C:\\Users\\k023g\\TD4_2\u56DE\u76EE\\Assets\\Scripts\\Map\\MapGenerator.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Map\\MapGenerator.cs",
               "ToolTip": "C:\\Users\\k023g\\TD4_2\u56DE\u76EE\\Assets\\Scripts\\Map\\MapGenerator.cs",
               "RelativeToolTip": "Assets\\Scripts\\Map\\MapGenerator.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAEkAAAABAAAAAAAAAA==",
+              "ViewState": "AgIAAFgAAAAAAAAAAAAkwGcAAAA+AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-06-19T06:23:13.485Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 4,
               "Title": "SimpleCameraFollow.cs",
               "DocumentMoniker": "C:\\Users\\k023g\\TD4_2\u56DE\u76EE\\Assets\\Scripts\\Player\\SimpleCameraFollow.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Player\\SimpleCameraFollow.cs",
@@ -72,23 +97,16 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 1,
               "Title": "PlayerController.cs",
               "DocumentMoniker": "C:\\Users\\k023g\\TD4_2\u56DE\u76EE\\Assets\\Scripts\\Player\\PlayerController.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Player\\PlayerController.cs",
               "ToolTip": "C:\\Users\\k023g\\TD4_2\u56DE\u76EE\\Assets\\Scripts\\Player\\PlayerController.cs",
               "RelativeToolTip": "Assets\\Scripts\\Player\\PlayerController.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAFoAAAABAAAAAAAAAA==",
+              "ViewState": "AgIAAFIAAAAAAAAAAAAswG4AAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-19T05:09:39.653Z"
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:0:0:{eefa5220-e298-11d0-8f78-00a0c9110057}"
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:0:0:{cce594b6-0c39-4442-ba28-10c64ac7e89f}"
+              "WhenOpened": "2026-06-19T05:09:39.653Z",
+              "EditorCaption": ""
             }
           ]
         },
