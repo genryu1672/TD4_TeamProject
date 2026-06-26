@@ -7,11 +7,15 @@ public class ScoreManager : MonoBehaviour
     [Header("現在のスコア")]
     public float currentScore = 0f;
 
+    [Header("前回のスコア（NEW!）")]
+    public float lastScore = 0f;
+
     [Header("ハイスコア")]
     public float highScore = 0f;
 
-    // スコアが保存されているか確認するためのキー名
+    // 保存用のキー名
     private const string HighScoreKey = "RunGame_HighScore";
+    private const string LastScoreKey = "RunGame_LastScore"; // 💡 前回のスコア用
 
     void Awake()
     {
@@ -21,17 +25,16 @@ public class ScoreManager : MonoBehaviour
 
     void Start()
     {
-        // 💡 ゲーム開始時に、パソコンに保存されているハイスコアを読み込む
-        // まだ一度も保存されていない（初回プレイ）場合は 0 が入ります
+        // 💡 ゲーム開始時に、保存されているハイスコアと前回のスコアを読み込む
         highScore = PlayerPrefs.GetFloat(HighScoreKey, 0f);
+        lastScore = PlayerPrefs.GetFloat(LastScoreKey, 0f); // 💡 前回値をロード
     }
 
     void Update()
     {
         if (Time.timeScale == 0f || PlayerController.Instance == null) return;
 
-        // 💡 プレイヤーの現在の速度（forwardSpeed）に合わせて、スコアを毎フレーム加算
-        // これで「速く走るほどスコアが早く増える」ようになります
+        // スコアを毎フレーム加算
         currentScore += PlayerController.Instance.forwardSpeed * Time.deltaTime;
 
         // 現在のスコアがハイスコアを超えたら、リアルタイムにハイスコアも更新
@@ -41,19 +44,28 @@ public class ScoreManager : MonoBehaviour
         }
     }
 
-    // 💡 障害物に当たった時（ゲームオーバー時）にこの関数を呼び出して保存する！
+    // 💡 リトライ時やゲームオーバー時に呼び出される関数
     public void SaveHighScore()
     {
-        // 現在のハイスコアの数値をパソコンに保存
+        // 🚀 【ここを追加】今回のスコアを「前回のスコア」として上書き保存する
+        lastScore = currentScore;
+        PlayerPrefs.SetFloat(LastScoreKey, lastScore);
+
+        // ハイスコアの数値を保存
         PlayerPrefs.SetFloat(HighScoreKey, highScore);
-        PlayerPrefs.Save(); // 念のため即座に書き込み確定
-        Debug.Log($"ハイスコアを保存しました: {(int)highScore}");
+
+        // データを確定
+        PlayerPrefs.Save();
+
+        Debug.Log($"データを保存しました。前回: {(int)lastScore} / 最高: {(int)highScore}");
     }
 
-    // 💡 デバッグ用：ハイスコアをリセットしたい時はこれをどこかで呼ぶ
+    // デバッグ用：データをリセットしたい時用
     public void ResetHighScore()
     {
         PlayerPrefs.DeleteKey(HighScoreKey);
+        PlayerPrefs.DeleteKey(LastScoreKey);
         highScore = 0f;
+        lastScore = 0f;
     }
 }

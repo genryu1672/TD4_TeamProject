@@ -9,6 +9,8 @@ public class MapGenerator : MonoBehaviour
     [Header("障害物のプレファブ（1x1x1のCube）")]
     public GameObject obstaclePrefab;
 
+    // 💡 coinPrefab と coinSpawnY のインスペクター項目は削除しました
+
     [Header("追従するプレイヤーのTransform")]
     public Transform playerTransform;
 
@@ -61,9 +63,6 @@ public class MapGenerator : MonoBehaviour
         // 一番手前の足場の「お尻（後端）」のZ座標を計算
         float blockBackendZ = activeBlocks[0].transform.position.z + (blockLength / 2f);
 
-        // 💡 【ここを修正！】
-        // 判定を「0f未満（プレイヤーの真横）」から「-blockLength（足場1枚分後ろ）」に変更します。
-        // これにより、足場がプレイヤーを完全に通り過ぎて、画面の後ろに隠れるまで削除されなくなります。
         if (blockBackendZ < -blockLength)
         {
             SpawnBlock(true);
@@ -76,21 +75,100 @@ public class MapGenerator : MonoBehaviour
         if (stageBlockPrefabs.Length == 0) return;
 
         GameObject selectedPrefab = stageBlockPrefabs[Random.Range(0, stageBlockPrefabs.Length)];
-        GameObject block = Instantiate(selectedPrefab);
 
+        // 🚀 もし選ばれたプレファブの名前が「3LaneStageBlock」だったら
+        if (selectedPrefab.name == "3LaneStageBlock")
+        {
+            // 3本のレーンと黒線をまとめる親グループを作成
+            GameObject parentGroup = new GameObject("3LaneStageGroup");
+            parentGroup.transform.position = new Vector3(0, 0, nextSpawnZ);
+            parentGroup.AddComponent<StageMover>();
+            activeBlocks.Add(parentGroup);
+
+            // -1(左), 0(中央), 1(右) のどれをハズレにするか決定
+            int trapLane = Random.Range(-1, 2);
+
+            // ① 1本の細いステージブロック(StageBlock)を3回ループして横に並べる
+            for (int lane = -1; lane <= 1; lane++)
+            {
+                GameObject singleBlock = Instantiate(stageBlockPrefabs[0]);
+                singleBlock.transform.SetParent(parentGroup.transform);
+                singleBlock.transform.localPosition = new Vector3(lane * laneDistance, 0, 0);
+
+                // もしこのレーンがハズレなら罠スクリプトをつける
+                if (lane == trapLane)
+                {
+                    BreakableFloor trapScript = singleBlock.AddComponent<BreakableFloor>();
+                    trapScript.isTrap = true;
+
+                    BoxCollider col = singleBlock.GetComponent<BoxCollider>();
+                    if (col != null) col.isTrigger = true;
+                }
+            }
+
+            // 🎨 【ここを追加！】境目に「黒い線（仕切り）」を2本生成する
+            // レーンとレーンの間（左と中央の間、中央と右の間）に配置します
+            float[] linePositions = { -laneDistance / 2f, laneDistance / 2f };
+            foreach (float lineX in linePositions)
+            {
+                GameObject line = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                line.name = "DividerLine";
+                line.transform.SetParent(parentGroup.transform);
+
+                // 床よりほんの少しだけ高く(0.02f)して、細長い黒線を配置
+                line.transform.localPosition = new Vector3(lineX, 0.02f, blockLength / 2f);
+                line.transform.localScale = new Vector3(0.15f, 1.02f, blockLength); // 幅15cmの線
+
+                // コライダーは邪魔なので消す
+                Destroy(line.GetComponent<BoxCollider>());
+
+                // 色を黒にする
+                Renderer lineRen = line.GetComponent<Renderer>();
+                if (lineRen != null)
+                {
+                    lineRen.material.color = Color.black;
+                }
+            }
+
+            // 🛠️ ② 近づくまで隠すための「ダミー床」をプログラムで自動追加！
+            GameObject dummyFloor = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            dummyFloor.name = "DummyFloor";
+            dummyFloor.transform.SetParent(parentGroup.transform);
+            dummyFloor.transform.localPosition = new Vector3(0, 0.01f, blockLength / 2f);
+            dummyFloor.transform.localScale = new Vector3(laneDistance * 3, 1.01f, blockLength);
+            Destroy(dummyFloor.GetComponent<BoxCollider>());
+
+            // 🛠️ ③ プレイヤーの接近を検知する「センサー」を自動追加！
+            GameObject sensorObj = new GameObject("Sensor");
+            sensorObj.transform.SetParent(parentGroup.transform);
+            sensorObj.transform.localPosition = new Vector3(0, 1f, 0f);
+
+            BoxCollider sensorCol = sensorObj.AddComponent<BoxCollider>();
+            sensorCol.isTrigger = true;
+            sensorCol.size = new Vector3(laneDistance * 3, 5f, 1f);
+
+            FloorSensor sensorScript = sensorObj.AddComponent<FloorSensor>();
+            sensorScript.dummyFloor = dummyFloor;
+
+            nextSpawnZ += blockLength;
+            return;
+        }
+
+        // 普通の床のときは今までの処理
+        GameObject block = Instantiate(selectedPrefab);
         block.transform.position = new Vector3(0, 0, nextSpawnZ);
         nextSpawnZ += blockLength;
 
         block.AddComponent<StageMover>();
         activeBlocks.Add(block);
 
-        if (spawnObstacle && obstaclePrefab != null)
+        if (spawnObstacle)
         {
-            GenerateRandomObstacles(block);
+            if (obstaclePrefab != null) GenerateRandomObstacles(block);
+            GenerateRandomCoins(block);
         }
     }
 
-    // 💡 引数を Transform から GameObject 自体を受け取るように変更
     void GenerateRandomObstacles(GameObject parentBlock)
     {
         int obstacleCount = Random.Range(1, 3);
@@ -100,18 +178,33 @@ public class MapGenerator : MonoBehaviour
             int randomLane = Random.Range(-1, 2);
             float spawnX = randomLane * laneDistance;
 
-            // 💡 【ここを修正】
-            // モデルの原点依存を廃止し、生成された床の現在の「ワールドZ座標」の真ん中付近（+15fなど）に直接配置します
             float spawnZ = parentBlock.transform.position.z + Random.Range(5f, blockLength - 5f);
-
-            // 確実なワールド座標を作成
             Vector3 worldObstaclePosition = new Vector3(spawnX, obstacleSpawnY, spawnZ);
 
             GameObject obstacle = Instantiate(obstaclePrefab);
-
-            // 先にワールド座標で位置を決めてから親子関係を結ぶ（これでズレません）
             obstacle.transform.position = worldObstaclePosition;
             obstacle.transform.SetParent(parentBlock.transform, true);
+        }
+    }
+
+    // 💡 コインの生成ロジックを CoinManager に頼む形にスッキリ化！
+    void GenerateRandomCoins(GameObject parentBlock)
+    {
+        if (CoinManager.Instance == null) return;
+
+        // 1枚の床に何箇所コインの束を置くか（1〜2箇所）
+        int coinGroupCount = Random.Range(1, 3);
+
+        for (int g = 0; g < coinGroupCount; g++)
+        {
+            int randomLane = Random.Range(-1, 2);
+            float spawnX = randomLane * laneDistance;
+
+            float startZ = parentBlock.transform.position.z + Random.Range(3f, blockLength - 10f);
+            int runLength = Random.Range(3, 6);
+
+            // 🚀 面倒な生成処理はすべてマネージャーにおまかせ！
+            CoinManager.Instance.SpawnCoinGroup(startZ, spawnX, runLength, blockLength, parentBlock.transform.position.z);
         }
     }
 
