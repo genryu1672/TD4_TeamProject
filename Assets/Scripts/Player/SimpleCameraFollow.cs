@@ -15,7 +15,9 @@ public class SimpleCameraFollow : MonoBehaviour
     [Header("壁が近付いたときのカメラ演出（FOV）")]
     public float normalFOV = 60f;
     public float panickedFOV = 75f;
-    public float fovSmoothSpeed = 5f;
+
+    // 💡 調整しやすいように初期値を少し落としました（インスペクターで変更可能）
+    public float fovSmoothSpeed = 2f;
 
     private Camera cam;
     private WallMover wallMover;
@@ -37,26 +39,28 @@ public class SimpleCameraFollow : MonoBehaviour
     {
         if (target != null)
         {
-            // ⬇️ 【ここを書き換えます！】 ⬇️
             // --- 1. カメラ位置の追従処理 ---
-            // X, Y, Z すべての軸の滑らかさ（Lerp）を廃止し、プレイヤーに完全同期させます。
             Vector3 desiredPosition = target.position + offset;
-
-            // これにより、時速180km（速度50）でもカメラが1フレームも遅れずに真後ろに固定されます！
             transform.position = desiredPosition;
 
-
-            // カメラの角度を完全にまっすぐ（正面）でロックします。角度は一切ガタつきません。
+            // カメラの角度を固定
             transform.rotation = Quaternion.Euler(15f, 0f, 0f);
-
 
             // --- 2. 壁の接近に連動してカメラを引く演出 ---
             if (wallMover != null && cam != null)
             {
                 float distanceToWall = target.position.z - wallMover.transform.position.z;
-                float t = Mathf.InverseLerp(15f, 4f, distanceToWall);
+
+                // 💡 【ここを修正！】
+                // 判定を開始する距離を「15f ➔ 30f」に広げました。
+                // これにより、もっと遠く（足場1枚分先）に壁がいる段階から、ゆっくり時間をかけて引き始めます。
+                float t = Mathf.InverseLerp(30f, 4f, distanceToWall);
+
                 float targetFOV = Mathf.Lerp(normalFOV, panickedFOV, t);
-                cam.fieldOfView = Mathf.Lerp(cam.fieldOfView, targetFOV, Time.deltaTime * fovSmoothSpeed);
+
+                // 💡 【ここを修正！】
+                // 変化がカクつかないように、前フレームのFOVから滑らかに補間させます。
+                cam.fieldOfView = Mathf.MoveTowards(cam.fieldOfView, targetFOV, fovSmoothSpeed * Time.deltaTime * 10f);
             }
         }
         else

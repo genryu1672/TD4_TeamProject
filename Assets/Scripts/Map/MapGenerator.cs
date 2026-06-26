@@ -21,6 +21,9 @@ public class MapGenerator : MonoBehaviour
     [Header("レーン設定")]
     public float laneDistance = 3.0f;
 
+    [Header("障害物の出現する高さ（埋まる場合は数値を上げてね）")]
+    public float obstacleSpawnY = 1.0f;
+
     private List<GameObject> activeBlocks = new List<GameObject>();
     private float nextSpawnZ = 0f;
 
@@ -53,10 +56,15 @@ public class MapGenerator : MonoBehaviour
 
     void Update()
     {
-        if (playerTransform == null || activeBlocks.Count == 0) return;
+        if (activeBlocks.Count == 0) return;
 
-        // ★プレイヤーが今いる足場を通り過ぎたら、進行方向に新しい道を生成して古い道を消す
-        if (playerTransform.position.z > activeBlocks[0].transform.position.z + blockLength)
+        // 一番手前の足場の「お尻（後端）」のZ座標を計算
+        float blockBackendZ = activeBlocks[0].transform.position.z + (blockLength / 2f);
+
+        // 💡 【ここを修正！】
+        // 判定を「0f未満（プレイヤーの真横）」から「-blockLength（足場1枚分後ろ）」に変更します。
+        // これにより、足場がプレイヤーを完全に通り過ぎて、画面の後ろに隠れるまで削除されなくなります。
+        if (blockBackendZ < -blockLength)
         {
             SpawnBlock(true);
             RemoveOldBlock();
@@ -67,23 +75,23 @@ public class MapGenerator : MonoBehaviour
     {
         if (stageBlockPrefabs.Length == 0) return;
 
-        // ランダム、または最初のプレファブを選択
         GameObject selectedPrefab = stageBlockPrefabs[Random.Range(0, stageBlockPrefabs.Length)];
         GameObject block = Instantiate(selectedPrefab);
+
         block.transform.position = new Vector3(0, 0, nextSpawnZ);
+        nextSpawnZ += blockLength;
+
+        block.AddComponent<StageMover>();
         activeBlocks.Add(block);
 
-        // 障害物の生成
         if (spawnObstacle && obstaclePrefab != null)
         {
-            GenerateRandomObstacles(block.transform, nextSpawnZ);
+            GenerateRandomObstacles(block);
         }
-
-        // 次の生成位置を足場の長さ分だけ進める
-        nextSpawnZ += blockLength;
     }
 
-    void GenerateRandomObstacles(Transform parentBlock, float blockZ)
+    // 💡 引数を Transform から GameObject 自体を受け取るように変更
+    void GenerateRandomObstacles(GameObject parentBlock)
     {
         int obstacleCount = Random.Range(1, 3);
 
@@ -91,12 +99,19 @@ public class MapGenerator : MonoBehaviour
         {
             int randomLane = Random.Range(-1, 2);
             float spawnX = randomLane * laneDistance;
-            float spawnZ = blockZ + Random.Range(5f, blockLength - 5f);
 
-            Vector3 obstaclePosition = new Vector3(spawnX, 1.0f, spawnZ);
+            // 💡 【ここを修正】
+            // モデルの原点依存を廃止し、生成された床の現在の「ワールドZ座標」の真ん中付近（+15fなど）に直接配置します
+            float spawnZ = parentBlock.transform.position.z + Random.Range(5f, blockLength - 5f);
 
-            GameObject obstacle = Instantiate(obstaclePrefab, obstaclePosition, Quaternion.identity);
-            obstacle.transform.SetParent(parentBlock);
+            // 確実なワールド座標を作成
+            Vector3 worldObstaclePosition = new Vector3(spawnX, obstacleSpawnY, spawnZ);
+
+            GameObject obstacle = Instantiate(obstaclePrefab);
+
+            // 先にワールド座標で位置を決めてから親子関係を結ぶ（これでズレません）
+            obstacle.transform.position = worldObstaclePosition;
+            obstacle.transform.SetParent(parentBlock.transform, true);
         }
     }
 
@@ -106,6 +121,7 @@ public class MapGenerator : MonoBehaviour
         {
             Destroy(activeBlocks[0]);
             activeBlocks.RemoveAt(0);
+            nextSpawnZ -= blockLength;
         }
     }
 }

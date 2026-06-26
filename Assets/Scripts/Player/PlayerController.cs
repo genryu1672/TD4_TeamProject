@@ -4,27 +4,34 @@ using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviour
 {
+    public static PlayerController Instance { get; private set; }
+
     [Header("移動速度")]
     public float forwardSpeed = 10f;
     public float laneShiftSpeed = 25f;
 
     [Header("スピード加速設定")]
     public float speedIncreaseRate = 0.1f;
-
-    // ⬇️ 【ここを修正！】コメントアウトを解除して、インスペクターから上限を設定できるように復活させました
     public float maxSpeed = 40f;
 
     [Header("レーン設定")]
     public float laneDistance = 3.0f;
-    private int currentLane = 1;      // 0: 左, 1: 中央, 2: 右
+    private int currentLane = 1;
 
     [Header("ジャンプ設定")]
-    public float jumpForce = 10f;
-    public float fallMultiplier = 4.5f;
+    public float jumpForce = 12f;          // 💡 少し高さを出すために12に調整（インスペクターで変更可）
+    public float jumpGravityMultiplier = 3.0f; // 💡 ジャンプ上昇中の重力倍率（フワフワ防止）
+    public float fallMultiplier = 5.0f;     // 💡 落下中の重力倍率（サッと降りる）
 
     private Rigidbody rb;
     private bool isGrounded = true;
     private float targetXPosition = 0f;
+
+    void Awake()
+    {
+        if (Instance == null) Instance = this;
+        else Destroy(gameObject);
+    }
 
     void Start()
     {
@@ -37,50 +44,34 @@ public class PlayerController : MonoBehaviour
     {
         if (Keyboard.current == null) return;
 
-        // リトライの入力判定
-        if (Time.timeScale == 0f && Keyboard.current.rKey.wasPressedThisFrame)
+        // 💡 【リトライ機能を追加】
+        // Time.timeScaleが0（ゲームオーバーやポーズ中）でも関係なく、Rキーが押されたらリトライします
+        if (Keyboard.current.rKey.wasPressedThisFrame)
         {
-            RestartGame();
-            return;
+            RetryGame();
+            return; // シーンが切り替わるので、以降の処理はスキップ
         }
 
-        // ゲームオーバー等で時間が止まっているなら処理しない
         if (Time.timeScale == 0f) return;
 
-        // forwardSpeed が maxSpeed（40や50）より小さい時だけ加速する
         if (forwardSpeed < maxSpeed)
         {
-            forwardSpeed += speedIncreaseRate * Time.deltaTime;
+            // 💡 【加速力アップ！】
+            forwardSpeed += speedIncreaseRate * (forwardSpeed * 0.2f) * Time.deltaTime;
 
-            // もし超えてしまったら、最大値でピタッと固定するブレーキ
-            if (forwardSpeed > maxSpeed)
-            {
-                forwardSpeed = maxSpeed;
-            }
+            if (forwardSpeed > maxSpeed) forwardSpeed = maxSpeed;
         }
 
-        // --- レーン移動の入力 ---
-        if (Keyboard.current.aKey.wasPressedThisFrame || Keyboard.current.leftArrowKey.wasPressedThisFrame)
-        {
-            MoveLane(false); // 左へ
-        }
-        else if (Keyboard.current.dKey.wasPressedThisFrame || Keyboard.current.rightArrowKey.wasPressedThisFrame)
-        {
-            MoveLane(true);  // 右へ
-        }
+        if (Keyboard.current.aKey.wasPressedThisFrame || Keyboard.current.leftArrowKey.wasPressedThisFrame) MoveLane(false);
+        else if (Keyboard.current.dKey.wasPressedThisFrame || Keyboard.current.rightArrowKey.wasPressedThisFrame) MoveLane(true);
 
-        // --- ジャンプの入力 ---
-        if (Keyboard.current.spaceKey.wasPressedThisFrame)
-        {
-            Jump();
-        }
+        if (Keyboard.current.spaceKey.wasPressedThisFrame) Jump();
     }
 
     void FixedUpdate()
     {
         if (Time.timeScale == 0f) return;
 
-        // --- 1. 目標のX座標への移動速度を計算 ---
         float currentX = transform.position.x;
         float xVelocity = 0f;
 
@@ -88,8 +79,6 @@ public class PlayerController : MonoBehaviour
         {
             float directionX = Mathf.Sign(targetXPosition - currentX);
             xVelocity = directionX * laneShiftSpeed;
-
-            // 行き過ぎ防止のブレーキ処理
             float nextX = currentX + xVelocity * Time.fixedDeltaTime;
             if ((directionX > 0 && nextX > targetXPosition) || (directionX < 0 && nextX < targetXPosition))
             {
@@ -97,32 +86,32 @@ public class PlayerController : MonoBehaviour
             }
         }
 
-        // --- 2. 落下重力の計算 ---
         float yVelocity = rb.linearVelocity.y;
-        if (!isGrounded && yVelocity < 0)
+
+        // 💡 【ジャンプの挙動をクッキリ修正】
+        if (!isGrounded)
         {
-            yVelocity -= fallMultiplier * Time.fixedDeltaTime;
+            if (yVelocity < 0)
+            {
+                // ① 頂点から落ちるとき（一瞬で着地させる）
+                yVelocity += Physics.gravity.y * (fallMultiplier - 1) * Time.fixedDeltaTime;
+            }
+            else if (yVelocity > 0)
+            {
+                // ② ボタンを押して上昇中（ここにも重力をかけてフワフワ感をなくす）
+                yVelocity += Physics.gravity.y * (jumpGravityMultiplier - 1) * Time.fixedDeltaTime;
+            }
         }
 
-        // --- 3. すべての速度（X, Y, Z）を1つのVector3にまとめて一発で適用 ---
-        Vector3 finalVelocity = new Vector3(xVelocity, yVelocity, forwardSpeed);
-        rb.linearVelocity = finalVelocity;
-
-        // プレイヤーの角度は常に正面でロック
+        // Z軸は完全に0で固定
+        rb.linearVelocity = new Vector3(xVelocity, yVelocity, 0f);
         transform.rotation = Quaternion.identity;
     }
 
     void MoveLane(bool goingRight)
     {
-        if (goingRight)
-        {
-            if (currentLane < 2) currentLane++;
-        }
-        else
-        {
-            if (currentLane > 0) currentLane--;
-        }
-
+        if (goingRight) { if (currentLane < 2) currentLane++; }
+        else { if (currentLane > 0) currentLane--; }
         targetXPosition = (currentLane - 1) * laneDistance;
     }
 
@@ -130,33 +119,26 @@ public class PlayerController : MonoBehaviour
     {
         if (isGrounded)
         {
-            Vector3 velocity = rb.linearVelocity;
-            velocity.y = jumpForce;
-            rb.linearVelocity = velocity;
-
+            rb.linearVelocity = new Vector3(rb.linearVelocity.x, jumpForce, 0f);
             isGrounded = false;
         }
     }
 
-    private void OnCollisionStay(Collision collision)
+    // 💡 【リトライの実行処理】
+    void RetryGame()
     {
-        if (collision.gameObject.CompareTag("Ground"))
+        // 🚀 シーンが切り替わる（リセットされる）直前に、ハイスコアを保存する命令を出す
+        if (ScoreManager.Instance != null)
         {
-            isGrounded = true;
+            ScoreManager.Instance.SaveHighScore();
         }
-    }
 
-    private void OnCollisionExit(Collision collision)
-    {
-        if (collision.gameObject.CompareTag("Ground"))
-        {
-            isGrounded = false;
-        }
-    }
-
-    void RestartGame()
-    {
+        // 現在開いているシーンの名前を取得
         string currentSceneName = SceneManager.GetActiveScene().name;
+        // 同じシーンを最初からロードし直す
         SceneManager.LoadScene(currentSceneName);
     }
+
+    private void OnCollisionStay(Collision c) { if (c.gameObject.CompareTag("Ground")) isGrounded = true; }
+    private void OnCollisionExit(Collision c) { if (c.gameObject.CompareTag("Ground")) isGrounded = false; }
 }
