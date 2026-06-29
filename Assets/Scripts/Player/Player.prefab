@@ -157,7 +157,7 @@ MonoBehaviour:
   laneShiftSpeed: 15
   speedIncreaseRate: 4
   maxSpeed: 100
-  laneDistance: 3
+  laneDistance: 1.5
   jumpForce: 7
   jumpGravityMultiplier: 3
   fallMultiplier: 5

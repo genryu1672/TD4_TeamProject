@@ -2,20 +2,25 @@
 
 public class FloorSensor : MonoBehaviour
 {
-    [Header("近づいたら消すダミーの床")]
     public GameObject dummyFloor;
+    private bool isTriggered = false;
 
     private void OnTriggerEnter(Collider other)
     {
-        // プレイヤーがセンサーに触れたら
+        if (isTriggered) return;
+
         if (other.CompareTag("Player"))
         {
-            if (dummyFloor != null)
-            {
-                // ダミーの床を消して、下の3択床を露出させる！
-                dummyFloor.SetActive(false);
+            isTriggered = true;
 
-                // 💡 ここで「ガシャーン」と床が割れる音やエフェクトを出すとさらに雰囲気が出ます！
+            // ダミーを消す
+            if (dummyFloor != null) dummyFloor.SetActive(false);
+
+            // 親についているクイズコントローラーを見つけて起動！
+            QuizFloorController quiz = transform.parent.GetComponent<QuizFloorController>();
+            if (quiz != null)
+            {
+                quiz.StartQuiz(other.gameObject);
             }
         }
     }

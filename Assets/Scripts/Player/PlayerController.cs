@@ -141,4 +141,18 @@ public class PlayerController : MonoBehaviour
 
     private void OnCollisionStay(Collision c) { if (c.gameObject.CompareTag("Ground")) isGrounded = true; }
     private void OnCollisionExit(Collision c) { if (c.gameObject.CompareTag("Ground")) isGrounded = false; }
+
+    // 🚀 クイズ開始時にレーン位置を中央（1）に強制リセットする関数
+    public void ResetToCenterLane()
+    {
+        currentLane = 1;
+        targetXPosition = 0f;
+        transform.position = new Vector3(0f, transform.position.y, transform.position.z);
+    }
+
+    // 🚀 クイズ判定時に、今どのレーンにいるかをクイズ側に教える関数 (0:左, 1:中央, 2:右)
+    public int GetCurrentLane()
+    {
+        return currentLane;
+    }
 }

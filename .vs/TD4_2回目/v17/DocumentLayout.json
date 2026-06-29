@@ -3,16 +3,24 @@
   "WorkspaceRootPath": "C:\\Users\\k023g\\TD4_2\u56DE\u76EE\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{BEDD47E1-972B-2D19-EC5F-14F328FA8362}|Assembly-CSharp.csproj|C:\\Users\\k023g\\TD4_2\u56DE\u76EE\\assets\\scripts\\breakablefloor\\quizfloorcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BEDD47E1-972B-2D19-EC5F-14F328FA8362}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\breakablefloor\\quizfloorcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{BEDD47E1-972B-2D19-EC5F-14F328FA8362}|Assembly-CSharp.csproj|C:\\Users\\k023g\\TD4_2\u56DE\u76EE\\assets\\scripts\\map\\mapgenerator.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{BEDD47E1-972B-2D19-EC5F-14F328FA8362}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\map\\mapgenerator.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{BEDD47E1-972B-2D19-EC5F-14F328FA8362}|Assembly-CSharp.csproj|c:\\users\\k023g\\td4_2\u56DE\u76EE\\assets\\scripts\\breakablefloor\\breakablefloor.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{BEDD47E1-972B-2D19-EC5F-14F328FA8362}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\breakablefloor\\breakablefloor.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{BEDD47E1-972B-2D19-EC5F-14F328FA8362}|Assembly-CSharp.csproj|C:\\Users\\k023g\\TD4_2\u56DE\u76EE\\assets\\scripts\\player\\playercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BEDD47E1-972B-2D19-EC5F-14F328FA8362}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\player\\playercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{BEDD47E1-972B-2D19-EC5F-14F328FA8362}|Assembly-CSharp.csproj|c:\\users\\k023g\\td4_2\u56DE\u76EE\\assets\\scripts\\breakablefloor\\floorsensor.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{BEDD47E1-972B-2D19-EC5F-14F328FA8362}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\breakablefloor\\floorsensor.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BEDD47E1-972B-2D19-EC5F-14F328FA8362}|Assembly-CSharp.csproj|C:\\Users\\k023g\\TD4_2\u56DE\u76EE\\assets\\scripts\\breakablefloor\\breakablefloor.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BEDD47E1-972B-2D19-EC5F-14F328FA8362}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\breakablefloor\\breakablefloor.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{BEDD47E1-972B-2D19-EC5F-14F328FA8362}|Assembly-CSharp.csproj|C:\\Users\\k023g\\TD4_2\u56DE\u76EE\\assets\\scripts\\coin\\coinmanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -25,10 +33,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{BEDD47E1-972B-2D19-EC5F-14F328FA8362}|Assembly-CSharp.csproj|C:\\Users\\k023g\\TD4_2\u56DE\u76EE\\assets\\scripts\\scoremanager\\scoremanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{BEDD47E1-972B-2D19-EC5F-14F328FA8362}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\scoremanager\\scoremanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{BEDD47E1-972B-2D19-EC5F-14F328FA8362}|Assembly-CSharp.csproj|C:\\Users\\k023g\\TD4_2\u56DE\u76EE\\assets\\scripts\\player\\playercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{BEDD47E1-972B-2D19-EC5F-14F328FA8362}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\player\\playercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{BEDD47E1-972B-2D19-EC5F-14F328FA8362}|Assembly-CSharp.csproj|C:\\Users\\k023g\\TD4_2\u56DE\u76EE\\assets\\scripts\\player\\simplecamerafollow.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -62,7 +66,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 3,
+          "SelectedChildIndex": 2,
           "Children": [
             {
               "$type": "Bookmark",
@@ -70,78 +74,29 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 3,
               "Title": "FloorSensor.cs",
               "DocumentMoniker": "C:\\Users\\k023g\\TD4_2\u56DE\u76EE\\Assets\\Scripts\\BreakableFloor\\FloorSensor.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\BreakableFloor\\FloorSensor.cs",
               "ToolTip": "C:\\Users\\k023g\\TD4_2\u56DE\u76EE\\Assets\\Scripts\\BreakableFloor\\FloorSensor.cs",
               "RelativeToolTip": "Assets\\Scripts\\BreakableFloor\\FloorSensor.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABUAAAABAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABoAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-06-26T07:24:50.047Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "BreakableFloor.cs",
-              "DocumentMoniker": "C:\\Users\\k023g\\TD4_2\u56DE\u76EE\\Assets\\Scripts\\BreakableFloor\\BreakableFloor.cs",
-              "RelativeDocumentMoniker": "Assets\\Scripts\\BreakableFloor\\BreakableFloor.cs",
-              "ToolTip": "C:\\Users\\k023g\\TD4_2\u56DE\u76EE\\Assets\\Scripts\\BreakableFloor\\BreakableFloor.cs",
-              "RelativeToolTip": "Assets\\Scripts\\BreakableFloor\\BreakableFloor.cs",
-              "ViewState": "AgIAAA8AAAAAAAAAAAAUwB0AAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-26T07:10:21.17Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "MapGenerator.cs",
-              "DocumentMoniker": "C:\\Users\\k023g\\TD4_2\u56DE\u76EE\\Assets\\Scripts\\Map\\MapGenerator.cs",
-              "RelativeDocumentMoniker": "Assets\\Scripts\\Map\\MapGenerator.cs",
-              "ToolTip": "C:\\Users\\k023g\\TD4_2\u56DE\u76EE\\Assets\\Scripts\\Map\\MapGenerator.cs",
-              "RelativeToolTip": "Assets\\Scripts\\Map\\MapGenerator.cs",
-              "ViewState": "AgIAAGgAAAAAAAAAAAAcwHcAAABeAAAAAAAAAA==",
+              "Title": "QuizFloorController.cs",
+              "DocumentMoniker": "C:\\Users\\k023g\\TD4_2\u56DE\u76EE\\Assets\\Scripts\\BreakableFloor\\QuizFloorController.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\BreakableFloor\\QuizFloorController.cs",
+              "ToolTip": "C:\\Users\\k023g\\TD4_2\u56DE\u76EE\\Assets\\Scripts\\BreakableFloor\\QuizFloorController.cs",
+              "RelativeToolTip": "Assets\\Scripts\\BreakableFloor\\QuizFloorController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAALIAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-19T06:23:13.485Z",
+              "WhenOpened": "2026-06-29T05:18:42.268Z",
               "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "CoinManager.cs",
-              "DocumentMoniker": "C:\\Users\\k023g\\TD4_2\u56DE\u76EE\\Assets\\Scripts\\Coin\\CoinManager.cs",
-              "RelativeDocumentMoniker": "Assets\\Scripts\\Coin\\CoinManager.cs",
-              "ToolTip": "C:\\Users\\k023g\\TD4_2\u56DE\u76EE\\Assets\\Scripts\\Coin\\CoinManager.cs",
-              "RelativeToolTip": "Assets\\Scripts\\Coin\\CoinManager.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAuwDQAAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-26T06:55:22.508Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "Coin.cs",
-              "DocumentMoniker": "C:\\Users\\k023g\\TD4_2\u56DE\u76EE\\Assets\\Scripts\\Coin\\Coin.cs",
-              "RelativeDocumentMoniker": "Assets\\Scripts\\Coin\\Coin.cs",
-              "ToolTip": "C:\\Users\\k023g\\TD4_2\u56DE\u76EE\\Assets\\Scripts\\Coin\\Coin.cs",
-              "RelativeToolTip": "Assets\\Scripts\\Coin\\Coin.cs",
-              "ViewState": "AgIAAAEAAAAAAAAAAAAAwA8AAAAFAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-26T06:33:34.356Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "ScoreManager.cs",
-              "DocumentMoniker": "C:\\Users\\k023g\\TD4_2\u56DE\u76EE\\Assets\\Scripts\\ScoreManager\\ScoreManager.cs",
-              "RelativeDocumentMoniker": "Assets\\Scripts\\ScoreManager\\ScoreManager.cs",
-              "ToolTip": "C:\\Users\\k023g\\TD4_2\u56DE\u76EE\\Assets\\Scripts\\ScoreManager\\ScoreManager.cs",
-              "RelativeToolTip": "Assets\\Scripts\\ScoreManager\\ScoreManager.cs",
-              "ViewState": "AgIAADMAAAAAAAAAAADwv0YAAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-26T06:15:06.737Z"
             },
             {
               "$type": "Bookmark",
@@ -153,19 +108,81 @@
             },
             {
               "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "BreakableFloor.cs",
+              "DocumentMoniker": "C:\\Users\\k023g\\TD4_2\u56DE\u76EE\\Assets\\Scripts\\BreakableFloor\\BreakableFloor.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\BreakableFloor\\BreakableFloor.cs",
+              "ToolTip": "C:\\Users\\k023g\\TD4_2\u56DE\u76EE\\Assets\\Scripts\\BreakableFloor\\BreakableFloor.cs",
+              "RelativeToolTip": "Assets\\Scripts\\BreakableFloor\\BreakableFloor.cs",
+              "ViewState": "AgIAAA8AAAAAAAAAAAAUwB0AAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-26T07:10:21.17Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "MapGenerator.cs",
+              "DocumentMoniker": "C:\\Users\\k023g\\TD4_2\u56DE\u76EE\\Assets\\Scripts\\Map\\MapGenerator.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\Map\\MapGenerator.cs",
+              "ToolTip": "C:\\Users\\k023g\\TD4_2\u56DE\u76EE\\Assets\\Scripts\\Map\\MapGenerator.cs",
+              "RelativeToolTip": "Assets\\Scripts\\Map\\MapGenerator.cs",
+              "ViewState": "AgIAAGoAAAAAAAAAAAAkwIUAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-19T06:23:13.485Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "CoinManager.cs",
+              "DocumentMoniker": "C:\\Users\\k023g\\TD4_2\u56DE\u76EE\\Assets\\Scripts\\Coin\\CoinManager.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\Coin\\CoinManager.cs",
+              "ToolTip": "C:\\Users\\k023g\\TD4_2\u56DE\u76EE\\Assets\\Scripts\\Coin\\CoinManager.cs",
+              "RelativeToolTip": "Assets\\Scripts\\Coin\\CoinManager.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAuwDQAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-26T06:55:22.508Z"
+            },
+            {
+              "$type": "Document",
               "DocumentIndex": 6,
+              "Title": "Coin.cs",
+              "DocumentMoniker": "C:\\Users\\k023g\\TD4_2\u56DE\u76EE\\Assets\\Scripts\\Coin\\Coin.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\Coin\\Coin.cs",
+              "ToolTip": "C:\\Users\\k023g\\TD4_2\u56DE\u76EE\\Assets\\Scripts\\Coin\\Coin.cs",
+              "RelativeToolTip": "Assets\\Scripts\\Coin\\Coin.cs",
+              "ViewState": "AgIAAAEAAAAAAAAAAAAAwA8AAAAFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-26T06:33:34.356Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "ScoreManager.cs",
+              "DocumentMoniker": "C:\\Users\\k023g\\TD4_2\u56DE\u76EE\\Assets\\Scripts\\ScoreManager\\ScoreManager.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\ScoreManager\\ScoreManager.cs",
+              "ToolTip": "C:\\Users\\k023g\\TD4_2\u56DE\u76EE\\Assets\\Scripts\\ScoreManager\\ScoreManager.cs",
+              "RelativeToolTip": "Assets\\Scripts\\ScoreManager\\ScoreManager.cs",
+              "ViewState": "AgIAADMAAAAAAAAAAADwv0YAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-26T06:15:06.737Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
               "Title": "PlayerController.cs",
               "DocumentMoniker": "C:\\Users\\k023g\\TD4_2\u56DE\u76EE\\Assets\\Scripts\\Player\\PlayerController.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Player\\PlayerController.cs",
               "ToolTip": "C:\\Users\\k023g\\TD4_2\u56DE\u76EE\\Assets\\Scripts\\Player\\PlayerController.cs",
               "RelativeToolTip": "Assets\\Scripts\\Player\\PlayerController.cs",
-              "ViewState": "AgIAAHcAAAAAAAAAAAAuwH4AAAAVAAAAAAAAAA==",
+              "ViewState": "AgIAAIIAAAAAAAAAAAAYwJwAAAAFAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-19T05:09:39.653Z"
+              "WhenOpened": "2026-06-19T05:09:39.653Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 11,
+              "DocumentIndex": 12,
               "Title": "InfiniteStageBlock.cs",
               "DocumentMoniker": "C:\\Users\\k023g\\TD4_2\u56DE\u76EE\\Assets\\Scripts\\Map\\InfiniteStageBlock.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Map\\InfiniteStageBlock.cs",
@@ -177,7 +194,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 10,
+              "DocumentIndex": 11,
               "Title": "StageMover.cs",
               "DocumentMoniker": "C:\\Users\\k023g\\TD4_2\u56DE\u76EE\\Assets\\Scripts\\Map\\StageMover.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Map\\StageMover.cs",
@@ -189,7 +206,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 9,
               "Title": "Obstacle.cs",
               "DocumentMoniker": "C:\\Users\\k023g\\TD4_2\u56DE\u76EE\\Assets\\Scripts\\Obstacle\\Obstacle.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Obstacle\\Obstacle.cs",
@@ -201,7 +218,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 12,
+              "DocumentIndex": 13,
               "Title": "WallMover.cs",
               "DocumentMoniker": "C:\\Users\\k023g\\TD4_2\u56DE\u76EE\\Assets\\Scripts\\Wall\\WallMover.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Wall\\WallMover.cs",
@@ -213,7 +230,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
+              "DocumentIndex": 10,
               "Title": "GameManager.cs",
               "DocumentMoniker": "C:\\Users\\k023g\\TD4_2\u56DE\u76EE\\Assets\\Scripts\\Map\\GameManager.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Map\\GameManager.cs",
@@ -225,7 +242,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 8,
               "Title": "SimpleCameraFollow.cs",
               "DocumentMoniker": "C:\\Users\\k023g\\TD4_2\u56DE\u76EE\\Assets\\Scripts\\Player\\SimpleCameraFollow.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Player\\SimpleCameraFollow.cs",
