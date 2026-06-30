@@ -7,21 +7,22 @@ public class FloorSensor : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        // 🚀【超重要】触れてきた相手のタグが「Player」じゃなければ1ミリも処理せず無視する！
+        if (!other.CompareTag("Player")) return;
+
+        // すでに起動済みなら無視
         if (isTriggered) return;
+        isTriggered = true;
 
-        if (other.CompareTag("Player"))
+        // ダミーを消す（使っていなければスルーされます）
+        if (dummyFloor != null) dummyFloor.SetActive(false);
+
+        // 親、または自分自身から確実にQuizFloorControllerを見つける
+        QuizFloorController quiz = GetComponentInParent<QuizFloorController>();
+        if (quiz != null)
         {
-            isTriggered = true;
-
-            // ダミーを消す
-            if (dummyFloor != null) dummyFloor.SetActive(false);
-
-            // 親についているクイズコントローラーを見つけて起動！
-            QuizFloorController quiz = transform.parent.GetComponent<QuizFloorController>();
-            if (quiz != null)
-            {
-                quiz.StartQuiz(other.gameObject);
-            }
+            // クイズを起動
+            quiz.StartQuiz(other.gameObject);
         }
     }
 }

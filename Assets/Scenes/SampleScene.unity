@@ -488,7 +488,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7c45fb6b01d6abf4f87425639aa398d0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MapGenerator
-  stageBlockPrefab: {fileID: 7637850788827402609, guid: ae3ce451487e4fc4a94c1955ab84e940, type: 3}
+  stageBlockPrefab: {fileID: 523017407027665912, guid: 06f1b54665369b742a064ffbf7604a3e, type: 3}
   obstaclePrefab: {fileID: 6524439448423755194, guid: cfcbe138960134e4881e94653134ff9d, type: 3}
   playerTransform: {fileID: 3401199752134227623, guid: 8bae42dc3e27dda40a87b4540761f27d, type: 3}
   blockLength: 30

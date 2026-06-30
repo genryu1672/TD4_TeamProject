@@ -4,176 +4,151 @@ using UnityEngine;
 
 public class QuizFloorController : MonoBehaviour
 {
-    public static int globalBlockCount = 0;
-
     [Header("この床をクイズステージ（3レーン）にするか")]
     public bool isQuizStage = false;
 
     [Header("クイズ中の前進スピード")]
     public float slowForwardSpeed = 5.0f;
 
-    private int trapLane;
+    [Header("3つの床オブジェクトをそれぞれドラッグ＆ドロップしてください")]
+    public GameObject leftFloor;
+    public GameObject centerFloor;
+    public GameObject rightFloor;
+
+    private int trapLane = -1;
     private GameObject[] lanes = new GameObject[3];
     private bool isQuizActive = false;
+    private bool isEvaluated = false;
     private Transform playerTransform;
     private PlayerController playerController;
 
-    void Awake()
+    void Awake() { }
+
+    // 🚀【やり方1 特化版】位置のリセットと初期化
+    public void InitializeQuizState(bool isQuiz)
     {
-        globalBlockCount++;
+        isQuizStage = isQuiz;
 
-        // 1回目のクイズは「5枚目」にすぐ出して、それ以降は「20枚ごと」に出現させる！
-        if (globalBlockCount == 5 || (globalBlockCount > 5 && (globalBlockCount - 5) % 20 == 0))
-        {
-            isQuizStage = true;
-        }
-    }
-
-    void Start()
-    {
-        GameObject leftFloor = null;
-        GameObject centerFloor = null;
-        GameObject rightFloor = null;
-
-        // すべての子要素から、名前を基準に「左・中央・右」の床をピンポイントで探す
-        foreach (Transform child in transform.GetComponentsInChildren<Transform>(true))
-        {
-            string nameLower = child.name.ToLower();
-            if (nameLower.Contains("left")) leftFloor = child.gameObject;
-            if (nameLower.Contains("right")) rightFloor = child.gameObject;
-
-            if (child != transform && (nameLower.Contains("stageblock") || nameLower.Contains("center")))
-            {
-                centerFloor = child.gameObject;
-            }
-        }
-
-        if (centerFloor == null) centerFloor = gameObject;
+        // 自分の足元にある子オブジェクトを名前から確実に取得
+        leftFloor = transform.Find("LeftFloor")?.gameObject;
+        centerFloor = transform.Find("CenterFloor")?.gameObject;
+        rightFloor = transform.Find("RightFloor")?.gameObject;
 
         lanes[0] = leftFloor;
         lanes[1] = centerFloor;
         lanes[2] = rightFloor;
 
-        // 🚀 【重要：復活処理】新しい床が作られたときは、見た目(Renderer)と衝突判定(Collider)を確実にONに戻す！
-        for (int i = 0; i < 3; i++)
+        // 🚀【最重要】位置の強制リセット
+        // 以前のクイズで奈落に落とされた床があっても、ここで元の高さ（Y = 0）に強制的に戻します！
+        for (int i = 0; i < lanes.Length; i++)
         {
             if (lanes[i] != null)
             {
-                foreach (Renderer r in lanes[i].GetComponentsInChildren<Renderer>(true)) r.enabled = true;
-                foreach (Collider c in lanes[i].GetComponentsInChildren<Collider>(true)) c.enabled = true;
+                // オブジェクト、見た目、コライダーは常にすべて「ON」のままにする（バグ防止）
+                lanes[i].SetActive(true);
+
+                var renderer = lanes[i].GetComponent<MeshRenderer>();
+                if (renderer != null) renderer.enabled = true;
+
+                var collider = lanes[i].GetComponent<Collider>();
+                if (collider != null) collider.enabled = true;
+
+                // 🚀 ローカル座標のYを0に戻すことで、親（StageBlock）と同じ高さに綺麗に揃います
+                Vector3 localPos = lanes[i].transform.localPosition;
+                localPos.y = 0f;
+                lanes[i].transform.localPosition = localPos;
             }
         }
 
-        // クイズかどうかに関わらず、左右の床は最初から常に表示する！
-        if (leftFloor != null) leftFloor.SetActive(true);
-        if (rightFloor != null) rightFloor.SetActive(true);
-
+        // センサーのオンオフ
+        Transform sensor = transform.Find("QuizSensor");
         if (isQuizStage)
         {
-            BoxCollider trigger = gameObject.AddComponent<BoxCollider>();
-            trigger.isTrigger = true;
-            trigger.size = new Vector3(6f, 4f, 10f);
-            trigger.center = new Vector3(0f, 2f, 0f);
+            trapLane = Random.Range(0, 3);
+            isQuizActive = false;
+            isEvaluated = false;
 
-            Debug.Log($"★3レーンクイズ床が前方にセットされました（通算{globalBlockCount}枚目）");
+            if (sensor != null) sensor.gameObject.SetActive(true);
+        }
+        else
+        {
+            trapLane = -1;
+            isQuizActive = false;
+            isEvaluated = false;
+
+            if (sensor != null) sensor.gameObject.SetActive(false);
         }
     }
 
-    void OnTriggerEnter(Collider other)
+    void Start()
     {
-        if (isQuizStage && !isQuizActive && (other.CompareTag("Player") || other.name.Contains("Player")))
+        GameObject playerObj = GameObject.FindWithTag("Player");
+        if (playerObj == null) playerObj = GameObject.Find("Player(Clone)");
+        if (playerObj != null)
         {
-            StartQuiz(other.gameObject);
+            playerTransform = playerObj.transform;
+            playerController = playerObj.GetComponent<PlayerController>();
         }
     }
 
     public void StartQuiz(GameObject player)
     {
-        isQuizActive = true;
-        playerTransform = player.transform;
+        if (isQuizStage == false) return;
+        if (trapLane == -1 || isQuizActive) return;
 
-        trapLane = Random.Range(0, 3);
-        string[] laneNames = { "左レーン", "中央レーン", "右レーン" };
-        Debug.Log($"🎯 【クイズ開始】ハズレ床 ⇒ 【{laneNames[trapLane]}】");
-
-        playerController = player.GetComponent<PlayerController>();
-
-        StartCoroutine(QuizSequence());
+        TriggerTrap();
     }
 
-    private IEnumerator QuizSequence()
+    // 🚀【やり方1 特化版】ハズレ床を奈落に落とす
+    private void TriggerTrap()
     {
-        Debug.Log("【ネプリーグ】前進中… 3... 2... 1...");
+        isQuizActive = true;
 
-        float timer = 0f;
-        bool isRed = false;
-
-        // 罠になるレーンに属するすべてのRendererを取得
-        Renderer[] trapRenderers = lanes[trapLane] != null ? lanes[trapLane].GetComponentsInChildren<Renderer>(true) : new Renderer[0];
-
-        // 🚀 【赤の強調表示】元の色をしっかりと保存（マテリアルカラー直接変更に対応）
-        Dictionary<Renderer, Color> originalColors = new Dictionary<Renderer, Color>();
-        foreach (Renderer r in trapRenderers)
+        if (trapLane >= 0 && trapLane < 3 && lanes[trapLane] != null)
         {
-            if (r != null && r.material != null)
-            {
-                originalColors[r] = r.material.color;
-            }
-        }
+            string[] laneNames = { "左レーン", "中央レーン", "右レーン" };
+            Debug.Log($"🎯 【ハズレ床ワープ】⇒ 【{laneNames[trapLane]}】を奈落の底へ叩き落としました！");
 
-        // 3秒間、ハズレの床を赤くチカチカ点滅させる
-        while (timer < 3.0f)
-        {
-            isRed = !isRed;
-            foreach (Renderer r in trapRenderers)
+            // 🚀【核心】SetActiveを触らず、位置だけを下方に100メートル吹き飛ばす
+            lanes[trapLane].transform.position += new Vector3(0f, -100f, 0f);
+
+            // ハズレ床に乗っている障害物やコインも一緒に巻き添えで落とす
+            Transform trapFloorTransform = lanes[trapLane].transform;
+            foreach (Transform child in trapFloorTransform)
             {
-                if (r != null && r.material != null)
+                if (child.gameObject.CompareTag("Obstacle") || child.name.Contains("Obstacle") || child.name.Contains("Coin"))
                 {
-                    // 🚀 はっきりと真っ赤にするための強調処理
-                    r.material.color = isRed ? Color.red : (originalColors.ContainsKey(r) ? originalColors[r] : Color.white);
+                    child.position += new Vector3(0f, -100f, 0f);
                 }
             }
-            yield return new WaitForSeconds(0.2f);
-            timer += 0.2f;
+
+            Invoke("EvaluateResult", 1.5f);
         }
+    }
 
-        // 点滅が終わったら一度元の色に戻す
-        foreach (Renderer r in trapRenderers)
-        {
-            if (r != null && originalColors.ContainsKey(r)) r.material.color = originalColors[r];
-        }
+    private void EvaluateResult()
+    {
+        if (!isQuizStage || isEvaluated || playerTransform == null) return;
+        isEvaluated = true;
 
-        yield return new WaitForSeconds(0.5f);
+        int playerLaneIndex = 1;
+        float playerX = playerTransform.position.x;
+        if (playerX < -1.5f) playerLaneIndex = 0;
+        else if (playerX > 1.5f) playerLaneIndex = 2;
+        else playerLaneIndex = 1;
 
-        int playerLaneIndex = 1; // デフォルト中央
-        if (playerController != null)
-        {
-            playerLaneIndex = playerController.GetCurrentLane();
-        }
+        string[] laneNames = { "左レーン", "中央レーン", "右レーン" };
 
-        // 💥 ハズレ床を非表示＆判定なしにする（消去）
-        if (lanes[trapLane] != null)
-        {
-            Debug.Log($"💥 罠発動！ 【{lanes[trapLane].name}】を消去！");
-            foreach (Renderer r in lanes[trapLane].GetComponentsInChildren<Renderer>(true)) r.enabled = false;
-            foreach (Collider c in lanes[trapLane].GetComponentsInChildren<Collider>(true)) c.enabled = false;
-        }
-
-        yield return new WaitForSeconds(0.5f);
-
-        // 勝敗判定
         if (playerLaneIndex == trapLane)
         {
-            Debug.Log("ゲームオーバー！ハズレを踏んで落下！");
+            Debug.Log($"ゲームオーバー！ハズレの【{laneNames[trapLane]}】を走ったため落下！");
             if (playerController != null) playerController.forwardSpeed = 0f;
             Rigidbody playerRb = playerTransform.GetComponent<Rigidbody>();
             if (playerRb != null) playerRb.isKinematic = false;
         }
         else
         {
-            Debug.Log("正解！セーフ！そのまま駆け抜ける！");
+            Debug.Log($"正解！ハズレは【{laneNames[trapLane]}】でした。セーフ！");
         }
-
-        isQuizActive = false;
     }
 }
