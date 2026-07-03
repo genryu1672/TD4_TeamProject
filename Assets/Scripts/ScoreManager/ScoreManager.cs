@@ -25,6 +25,9 @@ public class ScoreManager : MonoBehaviour
 
     void Start()
     {
+        // 🚀 【テスト用】これだけを追加してゲームを一度再生する！
+        //ResetHighScore();
+
         // 💡 ゲーム開始時に、保存されているハイスコアと前回のスコアを読み込む
         highScore = PlayerPrefs.GetFloat(HighScoreKey, 0f);
         lastScore = PlayerPrefs.GetFloat(LastScoreKey, 0f); // 💡 前回値をロード

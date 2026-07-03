@@ -22,7 +22,7 @@ public class ScoreUI : MonoBehaviour
         // --- ハイスコアを更新 ---
         if (highScoreText != null)
         {
-            highScoreText.text = "HI-SCORE: " + ((int)ScoreManager.Instance.highScore).ToString();
+            highScoreText.text = "HighSCORE: " + ((int)ScoreManager.Instance.highScore).ToString();
         }
     }
 
