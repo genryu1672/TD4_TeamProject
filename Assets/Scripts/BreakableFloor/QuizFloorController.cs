@@ -22,14 +22,18 @@ public class QuizFloorController : MonoBehaviour
     private Transform playerTransform;
     private PlayerController playerController;
 
+    private Color defaultFloorColor = Color.gray;
+    private bool hasSavedDefaultColor = false;
+    private bool isTrapTriggered = false;
+
     void Awake() { }
 
-    // 🚀【やり方1 特化版】位置のリセットと初期化
+    // 🚀位置のリセットと初期化
     public void InitializeQuizState(bool isQuiz)
     {
         isQuizStage = isQuiz;
+        isTrapTriggered = false;
 
-        // 自分の足元にある子オブジェクトを名前から確実に取得
         leftFloor = transform.Find("LeftFloor")?.gameObject;
         centerFloor = transform.Find("CenterFloor")?.gameObject;
         rightFloor = transform.Find("RightFloor")?.gameObject;
@@ -38,29 +42,40 @@ public class QuizFloorController : MonoBehaviour
         lanes[1] = centerFloor;
         lanes[2] = rightFloor;
 
-        // 🚀【最重要】位置の強制リセット
-        // 以前のクイズで奈落に落とされた床があっても、ここで元の高さ（Y = 0）に強制的に戻します！
         for (int i = 0; i < lanes.Length; i++)
         {
             if (lanes[i] != null)
             {
-                // オブジェクト、見た目、コライダーは常にすべて「ON」のままにする（バグ防止）
                 lanes[i].SetActive(true);
 
                 var renderer = lanes[i].GetComponent<MeshRenderer>();
-                if (renderer != null) renderer.enabled = true;
+                if (renderer != null)
+                {
+                    renderer.enabled = true;
+                    if (!hasSavedDefaultColor)
+                    {
+                        defaultFloorColor = renderer.material.color;
+                        hasSavedDefaultColor = true;
+                    }
+                    renderer.material.color = defaultFloorColor;
+                }
 
+                // ======================================================================
+                // ✨【大修正】すり抜けバグを防ぐため、最初から「普通の固い床」として配置します！
+                // ======================================================================
                 var collider = lanes[i].GetComponent<Collider>();
-                if (collider != null) collider.enabled = true;
+                if (collider != null)
+                {
+                    collider.enabled = true;
+                    collider.isTrigger = false; // すり抜けない固い床にする
+                }
 
-                // 🚀 ローカル座標のYを0に戻すことで、親（StageBlock）と同じ高さに綺麗に揃います
                 Vector3 localPos = lanes[i].transform.localPosition;
                 localPos.y = 0f;
                 lanes[i].transform.localPosition = localPos;
             }
         }
 
-        // センサーのオンオフ
         Transform sensor = transform.Find("QuizSensor");
         if (isQuizStage)
         {
@@ -69,6 +84,15 @@ public class QuizFloorController : MonoBehaviour
             isEvaluated = false;
 
             if (sensor != null) sensor.gameObject.SetActive(true);
+
+            if (trapLane >= 0 && trapLane < 3 && lanes[trapLane] != null)
+            {
+                var trapRenderer = lanes[trapLane].GetComponent<MeshRenderer>();
+                if (trapRenderer != null)
+                {
+                    trapRenderer.material.color = Color.red;
+                }
+            }
         }
         else
         {
@@ -91,38 +115,60 @@ public class QuizFloorController : MonoBehaviour
         }
     }
 
+    void FixedUpdate() { }
+
     public void StartQuiz(GameObject player)
     {
         if (isQuizStage == false) return;
         if (trapLane == -1 || isQuizActive) return;
 
-        TriggerTrap();
+        isQuizActive = true;
     }
 
-    // 🚀【やり方1 特化版】ハズレ床を奈落に落とす
+    // 🚀プレイヤーが「いずれかの床」に着地した瞬間に呼ばれる
+    public void OnPlayerEnterFloor(GameObject steppedFloor)
+    {
+        // 💡【修正】もしクイズステージなのにまだ開始フラグが立っていなければ、ここで強制的に開始する！
+        if (isQuizStage && !isQuizActive)
+        {
+            isQuizActive = true;
+        }
+
+        if (!isQuizStage || !isQuizActive || isTrapTriggered) return;
+
+        // 踏まれた床が、ハズレの床（赤）と同じものだったら
+        if (trapLane >= 0 && trapLane < 3 && lanes[trapLane] == steppedFloor)
+        {
+            // 🎯 ハズレを踏んだので、この赤い床だけを落とす！
+            TriggerTrap();
+        }
+        else
+        {
+            // セーフの床を踏んだ場合は、最初から固い床なので何もしなくて安全です！
+            Debug.Log("🟢 セーフの床に着地しました。安全です。");
+        }
+    }
+
+    // 🚀ハズレ床を奈落に落とす
     private void TriggerTrap()
     {
-        isQuizActive = true;
+        isTrapTriggered = true; // 重複発動防止
 
         if (trapLane >= 0 && trapLane < 3 && lanes[trapLane] != null)
         {
             string[] laneNames = { "左レーン", "中央レーン", "右レーン" };
-            Debug.Log($"🎯 【ハズレ床ワープ】⇒ 【{laneNames[trapLane]}】を奈落の底へ叩き落としました！");
+            Debug.Log($"🎯 【赤い床を完全検知！】⇒ 【{laneNames[trapLane]}】が落ちます！");
 
-            // 🚀【核心】SetActiveを触らず、位置だけを下方に100メートル吹き飛ばす
-            lanes[trapLane].transform.position += new Vector3(0f, -100f, 0f);
+            // プレイヤーをストレートに落とすため、ハズレ床のコライダーを消去、またはトリガー化
+            var col = lanes[trapLane].GetComponent<Collider>();
+            if (col != null) col.isTrigger = true;
 
-            // ハズレ床に乗っている障害物やコインも一緒に巻き添えで落とす
-            Transform trapFloorTransform = lanes[trapLane].transform;
-            foreach (Transform child in trapFloorTransform)
-            {
-                if (child.gameObject.CompareTag("Obstacle") || child.name.Contains("Obstacle") || child.name.Contains("Coin"))
-                {
-                    child.position += new Vector3(0f, -100f, 0f);
-                }
-            }
+            // 赤い床自体をローカル座標の下方に瞬間移動（奈落へ落とす）
+            Vector3 targetLocalPos = lanes[trapLane].transform.localPosition;
+            targetLocalPos.y = -100f;
+            lanes[trapLane].transform.localPosition = targetLocalPos;
 
-            Invoke("EvaluateResult", 1.5f);
+            Invoke("EvaluateResult", 0.1f);
         }
     }
 
@@ -143,12 +189,17 @@ public class QuizFloorController : MonoBehaviour
         {
             Debug.Log($"ゲームオーバー！ハズレの【{laneNames[trapLane]}】を走ったため落下！");
             if (playerController != null) playerController.forwardSpeed = 0f;
+
             Rigidbody playerRb = playerTransform.GetComponent<Rigidbody>();
-            if (playerRb != null) playerRb.isKinematic = false;
+            if (playerRb != null)
+            {
+                playerRb.isKinematic = false;
+                playerRb.useGravity = true;
+            }
         }
         else
         {
-            Debug.Log($"正解！ハズレは【{laneNames[trapLane]}】でした。セーフ！");
+            Debug.Log($"正解！セーフ！");
         }
     }
 }

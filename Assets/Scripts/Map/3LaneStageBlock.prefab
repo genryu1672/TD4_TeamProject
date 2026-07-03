@@ -65,6 +65,7 @@ GameObject:
   - component: {fileID: 3297487424682939037}
   - component: {fileID: 3006845876947154007}
   - component: {fileID: 1720397330671794185}
+  - component: {fileID: 5018494209369105362}
   m_Layer: 0
   m_Name: RightFloor
   m_TagString: Untagged
@@ -165,6 +166,18 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &5018494209369105362
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1527601917718501007}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 209146cb26c73a646bb8d8a91a2753e3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::QuizFloorChild
 --- !u!1 &4617700403078275454
 GameObject:
   m_ObjectHideFlags: 0
@@ -244,6 +257,7 @@ GameObject:
   - component: {fileID: 4973814790835790052}
   - component: {fileID: 43769146134490073}
   - component: {fileID: 4734860256890607568}
+  - component: {fileID: 5486040362708226736}
   m_Layer: 0
   m_Name: CenterFloor
   m_TagString: Ground
@@ -344,6 +358,18 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &5486040362708226736
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5892356840574213738}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 209146cb26c73a646bb8d8a91a2753e3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::QuizFloorChild
 --- !u!1 &8573449354918824631
 GameObject:
   m_ObjectHideFlags: 0
@@ -356,6 +382,7 @@ GameObject:
   - component: {fileID: 5867327137837872457}
   - component: {fileID: 4185155143161286853}
   - component: {fileID: 3985219262586538048}
+  - component: {fileID: 5507173877061495163}
   m_Layer: 0
   m_Name: LeftFloor
   m_TagString: Untagged
@@ -456,3 +483,15 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &5507173877061495163
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8573449354918824631}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 209146cb26c73a646bb8d8a91a2753e3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::QuizFloorChild

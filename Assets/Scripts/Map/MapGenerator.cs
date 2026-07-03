@@ -50,16 +50,34 @@ public class MapGenerator : MonoBehaviour
     {
         if (activeBlocks.Count == 0) return;
 
-        // 🚀【床移動型・専用システム】
-        // 先頭（一番古い）床が手前に進んできて、完全に画面の後ろ（Zがマイナス方向）に消え去ったら
-        // 古い床を消して、奥に新しい床を1枚補充する！
-        if (activeBlocks[0].transform.position.z <= -blockLength)
-        {
-            // 奥に1枚補充（障害物あり）
-            SpawnBlock(true);
+        // 🚀【修正ポイント】
+        // 全体の親である「StageContainer」をシーン内から探します
+        GameObject container = GameObject.Find("StageContainer");
 
-            // 画面外に出た手前の床を消去
-            RemoveOldBlock();
+        if (container != null)
+        {
+            // 床（子供）のローカル座標に、動く親（Container）のZ座標を足すことで、
+            // 「今、1枚目の床が本当にいるワールド座標のZ位置」を正確に計算します。
+            float currentWorldZ = activeBlocks[0].transform.localPosition.z + container.transform.position.z;
+
+            // 先頭（一番古い）床が完全に画面の後ろ（Zがマイナス方向）に消え去ったら
+            if (currentWorldZ <= -blockLength)
+            {
+                // 奥に1枚補充（障害物あり）
+                SpawnBlock(true);
+
+                // 画面外に出た手前の床を消去
+                RemoveOldBlock();
+            }
+        }
+        else
+        {
+            // 💡 もしStageContainerが見つからない場合は、今までの安全な判定で動かします
+            if (activeBlocks[0].transform.position.z <= -blockLength)
+            {
+                SpawnBlock(true);
+                RemoveOldBlock();
+            }
         }
     }
 
@@ -67,16 +85,29 @@ public class MapGenerator : MonoBehaviour
     {
         if (stageBlockPrefab == null) return;
 
-        // 🚀 次に生成すべき絶対座標（nextSpawnZ）に生成
-        Vector3 spawnPos = new Vector3(0f, 0f, nextSpawnZ);
-        GameObject block = Instantiate(stageBlockPrefab, spawnPos, Quaternion.identity);
+        // 🚀【修正ポイント】
+        // 生成時は一度位置をリセットしてインスタンス化します
+        GameObject block = Instantiate(stageBlockPrefab, Vector3.zero, Quaternion.identity);
+
+        // 親となる StageContainer を探す
+        GameObject container = GameObject.Find("StageContainer");
+        if (container != null)
+        {
+            // 生成した床を StageContainer の子供にする
+            block.transform.SetParent(container.transform);
+
+            // 親（Container）から見た相対的な位置（localPosition）として、
+            // 綺麗に Z = 0, 30, 60, 90... と隙間なく並べます！
+            block.transform.localPosition = new Vector3(0f, 0f, nextSpawnZ);
+        }
+        else
+        {
+            // もし親がなければ、これまでのワールド座標ベースで並べる（安全用）
+            block.transform.position = new Vector3(0f, 0f, nextSpawnZ);
+        }
 
         // 🚀【超重要】次の床の生成位置は、単純に blockLength 分だけプラスしていくだけ！
-        // 変な引き算を混ぜないことで、絶対に床同士が隙間なく結合します。
         nextSpawnZ += blockLength;
-
-        // 🚀 元のインスペクターにStageMoverがついているため、
-        // ここで AddComponent<StageMover>() を重ねて行うと2重に動いてバグるので削除しました。
 
         activeBlocks.Add(block);
         totalSpawnedBlocks++;
