@@ -9,6 +9,9 @@ public class MapGenerator : MonoBehaviour
     [Header("障害物のプレファブ（1x1x1のCube）")]
     public GameObject obstaclePrefab;
 
+    [Header("減速床のプレファブ (※別スクリプト化したため使用しません)")]
+    public GameObject speedDownZonePrefab;
+
     [Header("追従するプレイヤーのTransform (※床移動型なので基本不要ですが残します)")]
     public Transform playerTransform;
 
@@ -18,7 +21,7 @@ public class MapGenerator : MonoBehaviour
     [Header("画面内に事前に用意しておく足場の数")]
     public int maxBlocks = 5;
 
-    [Header("障害物の出現する高さ")]
+    [Header("障害物の出現する高さ（普通用）")]
     public float obstacleSpawnY = 1.0f;
 
     private List<GameObject> activeBlocks = new List<GameObject>();
@@ -38,7 +41,6 @@ public class MapGenerator : MonoBehaviour
             if (player != null) playerTransform = player.transform;
         }
 
-        // 🚀 最初に初期枚数（例: 5枚）を Z = 0, 30, 60, 90, 120 に綺麗に並べる
         nextSpawnZ = 0f;
         for (int i = 0; i < maxBlocks; i++)
         {
@@ -50,29 +52,20 @@ public class MapGenerator : MonoBehaviour
     {
         if (activeBlocks.Count == 0) return;
 
-        // 🚀【修正ポイント】
-        // 全体の親である「StageContainer」をシーン内から探します
         GameObject container = GameObject.Find("StageContainer");
 
         if (container != null)
         {
-            // 床（子供）のローカル座標に、動く親（Container）のZ座標を足すことで、
-            // 「今、1枚目の床が本当にいるワールド座標のZ位置」を正確に計算します。
             float currentWorldZ = activeBlocks[0].transform.localPosition.z + container.transform.position.z;
 
-            // 先頭（一番古い）床が完全に画面の後ろ（Zがマイナス方向）に消え去ったら
             if (currentWorldZ <= -blockLength)
             {
-                // 奥に1枚補充（障害物あり）
                 SpawnBlock(true);
-
-                // 画面外に出た手前の床を消去
                 RemoveOldBlock();
             }
         }
         else
         {
-            // 💡 もしStageContainerが見つからない場合は、今までの安全な判定で動かします
             if (activeBlocks[0].transform.position.z <= -blockLength)
             {
                 SpawnBlock(true);
@@ -85,44 +78,54 @@ public class MapGenerator : MonoBehaviour
     {
         if (stageBlockPrefab == null) return;
 
-        // 🚀【修正ポイント】
-        // 生成時は一度位置をリセットしてインスタンス化します
         GameObject block = Instantiate(stageBlockPrefab, Vector3.zero, Quaternion.identity);
 
-        // 親となる StageContainer を探す
         GameObject container = GameObject.Find("StageContainer");
         if (container != null)
         {
-            // 生成した床を StageContainer の子供にする
             block.transform.SetParent(container.transform);
-
-            // 親（Container）から見た相対的な位置（localPosition）として、
-            // 綺麗に Z = 0, 30, 60, 90... と隙間なく並べます！
             block.transform.localPosition = new Vector3(0f, 0f, nextSpawnZ);
         }
         else
         {
-            // もし親がなければ、これまでのワールド座標ベースで並べる（安全用）
             block.transform.position = new Vector3(0f, 0f, nextSpawnZ);
         }
 
-        // 🚀【超重要】次の床の生成位置は、単純に blockLength 分だけプラスしていくだけ！
         nextSpawnZ += blockLength;
 
         activeBlocks.Add(block);
         totalSpawnedBlocks++;
 
-        // 5枚目、そこから20枚ごとにクイズにするかどうかのフラグを決定
         bool shouldBeQuiz = (totalSpawnedBlocks == 5 || (totalSpawnedBlocks > 5 && (totalSpawnedBlocks - 5) % 20 == 0));
 
-        // 生成したその場で、床を完全に初期化する
         QuizFloorController quiz = block.GetComponent<QuizFloorController>();
         if (quiz != null)
         {
             quiz.InitializeQuizState(shouldBeQuiz);
+
+            // 💡【ここを追記！】
+            // クイズステージじゃない普通の床のとき、30%の確率で「沼レーン」を1つ作る
+            if (!shouldBeQuiz && Random.Range(0f, 1f) < 0.30f)
+            {
+                int randomLane = Random.Range(0, 3);
+                GameObject targetFloor = null;
+
+                if (randomLane == 0) targetFloor = quiz.leftFloor;
+                if (randomLane == 1) targetFloor = quiz.centerFloor;
+                if (randomLane == 2) targetFloor = quiz.rightFloor;
+
+                if (targetFloor != null)
+                {
+                    // 🎨 見た目を沼っぽく茶色にする
+                    var renderer = targetFloor.GetComponent<MeshRenderer>();
+                    if (renderer != null) renderer.material.color = new Color(0.4f, 0.25f, 0.15f);
+
+                    // 🛠️ 【超重要】ここで別スクリプト（SlowMudZone）をリアルタイムでペタッと貼り付ける！
+                    targetFloor.AddComponent<SlowMudZone>();
+                }
+            }
         }
 
-        // 障害物とコインの生成
         if (spawnObstacle)
         {
             GenerateRandomObstacles(block);
@@ -134,47 +137,46 @@ public class MapGenerator : MonoBehaviour
     {
         if (obstaclePrefab == null) return;
 
-        var quiz = parentBlock.GetComponent<QuizFloorController>();
-        if (quiz != null && quiz.isQuizStage) return;
+        // 💡 沼になっているレーンの上には障害物を置かないよう、すでにSlowMudZoneが子供にあるかチェック
+        if (parentBlock.GetComponentInChildren<SlowMudZone>() != null) return;
 
         int randomLane = Random.Range(0, 3);
-        float spawnX = (randomLane - 1) * 1.5f;
-        float spawnZ = parentBlock.transform.position.z + (blockLength / 2f);
 
-        Vector3 spawnPosition = new Vector3(spawnX, obstacleSpawnY, spawnZ);
-        GameObject obstacle = Instantiate(obstaclePrefab, spawnPosition, Quaternion.identity);
+        string spawnPointName = "";
+        switch (randomLane)
+        {
+            case 0: spawnPointName = "SpawnPoint_Left"; break;
+            case 1: spawnPointName = "SpawnPoint_Center"; break;
+            case 2: spawnPointName = "SpawnPoint_Right"; break;
+        }
+
+        Transform spawnPoint = parentBlock.transform.Find(spawnPointName);
+        if (spawnPoint == null)
+        {
+            Debug.LogWarning("Parent block " + parentBlock.name + " is missing a child object named: " + spawnPointName + ". Obstacle spawning skipped.");
+            return;
+        }
+
+        // 💡 浮いていた古い沼プレファブ生成処理は消去し、通常の障害物（いつものCube）だけを生成する形に一本化
+        Vector3 localSpawnPosition = new Vector3(0f, obstacleSpawnY, blockLength / 2f);
+
+        GameObject obstacle = Instantiate(obstaclePrefab, Vector3.zero, Quaternion.identity);
+
         obstacle.transform.SetParent(parentBlock.transform);
+        obstacle.transform.localPosition = localSpawnPosition;
     }
 
     void GenerateRandomCoins(GameObject parentBlock)
     {
-        var quiz = parentBlock.GetComponent<QuizFloorController>();
-        if (quiz != null && quiz.isQuizStage) return;
-
         if (CoinManager.Instance == null) return;
-        int coinGroupCount = Random.Range(1, 3);
-        for (int g = 0; g < coinGroupCount; g++)
-        {
-            int randomLane = Random.Range(0, 3);
-            float spawnX = (randomLane - 1) * 1.5f;
-
-            float startZ = parentBlock.transform.position.z + Random.Range(3f, blockLength - 10f);
-            int runLength = Random.Range(3, 6);
-            CoinManager.Instance.SpawnCoinGroup(startZ, spawnX, runLength, blockLength, parentBlock.transform.position.z);
-        }
     }
 
     void RemoveOldBlock()
     {
         if (activeBlocks.Count > 0)
         {
-            // 🚀 手前の古い床を削除
             Destroy(activeBlocks[0]);
             activeBlocks.RemoveAt(0);
-
-            // 🚀【バグの完全根絶】
-            // 古いコードにあった「nextSpawnZ -= blockLength;」は完全に廃止！
-            // これにより、生成位置が手前に狂って床が消失するバグが完全に直ります。
         }
     }
 }

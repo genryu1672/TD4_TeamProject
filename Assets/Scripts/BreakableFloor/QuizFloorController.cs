@@ -128,10 +128,29 @@ public class QuizFloorController : MonoBehaviour
     // 🚀プレイヤーが「いずれかの床」に着地した瞬間に呼ばれる
     public void OnPlayerEnterFloor(GameObject steppedFloor)
     {
-        // 💡【修正】もしクイズステージなのにまだ開始フラグが立っていなければ、ここで強制的に開始する！
         if (isQuizStage && !isQuizActive)
         {
             isQuizActive = true;
+        }
+
+        // 💡 【ここを追記！】
+        // 3つのレーンをチェックして、沼スクリプトがついている床があれば通知を送る
+        for (int i = 0; i < lanes.Length; i++)
+        {
+            if (lanes[i] == null) continue;
+
+            SlowMudZone mud = lanes[i].GetComponent<SlowMudZone>();
+            if (mud != null)
+            {
+                if (lanes[i] == steppedFloor)
+                {
+                    mud.OnPlayerStepOn(); // 今踏んだのが沼なら減速スイッチON
+                }
+                else
+                {
+                    mud.OnPlayerStepOff(); // 沼以外のレーンに移ったら解除
+                }
+            }
         }
 
         if (!isQuizStage || !isQuizActive || isTrapTriggered) return;
@@ -139,12 +158,10 @@ public class QuizFloorController : MonoBehaviour
         // 踏まれた床が、ハズレの床（赤）と同じものだったら
         if (trapLane >= 0 && trapLane < 3 && lanes[trapLane] == steppedFloor)
         {
-            // 🎯 ハズレを踏んだので、この赤い床だけを落とす！
             TriggerTrap();
         }
         else
         {
-            // セーフの床を踏んだ場合は、最初から固い床なので何もしなくて安全です！
             Debug.Log("🟢 セーフの床に着地しました。安全です。");
         }
     }
@@ -159,7 +176,6 @@ public class QuizFloorController : MonoBehaviour
             string[] laneNames = { "左レーン", "中央レーン", "右レーン" };
             Debug.Log($"🎯 【赤い床を完全検知！】⇒ 【{laneNames[trapLane]}】が落ちます！");
 
-            // プレイヤーをストレートに落とすため、ハズレ床のコライダーを消去、またはトリガー化
             var col = lanes[trapLane].GetComponent<Collider>();
             if (col != null) col.isTrigger = true;
 
