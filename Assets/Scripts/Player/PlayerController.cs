@@ -66,6 +66,11 @@ public class PlayerController : MonoBehaviour
         else if (Keyboard.current.dKey.wasPressedThisFrame || Keyboard.current.rightArrowKey.wasPressedThisFrame) MoveLane(true);
 
         if (Keyboard.current.spaceKey.wasPressedThisFrame) Jump();
+
+        if (transform.position.y < -5f)
+        {
+            if (GameManager.Instance != null) GameManager.Instance.TriggerGameOver();
+        }
     }
 
     void FixedUpdate()
