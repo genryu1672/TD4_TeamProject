@@ -60,14 +60,11 @@ public class QuizFloorController : MonoBehaviour
                     renderer.material.color = defaultFloorColor;
                 }
 
-                // ======================================================================
-                // ✨【大修正】すり抜けバグを防ぐため、最初から「普通の固い床」として配置します！
-                // ======================================================================
                 var collider = lanes[i].GetComponent<Collider>();
                 if (collider != null)
                 {
                     collider.enabled = true;
-                    collider.isTrigger = false; // すり抜けない固い床にする
+                    collider.isTrigger = false;
                 }
 
                 Vector3 localPos = lanes[i].transform.localPosition;
@@ -115,7 +112,18 @@ public class QuizFloorController : MonoBehaviour
         }
     }
 
-    void FixedUpdate() { }
+    void FixedUpdate()
+    {
+        // 💡 落下中のゲームオーバー判定：プレイヤーが一定の高さ（例：Yが -3以下）まで落ちたらGameOverPanelを呼び出す
+        if (isQuizStage && isTrapTriggered && !isEvaluated && playerTransform != null)
+        {
+            if (playerTransform.position.y < -3.0f) // ✨この高さまでちゃんと落下したら
+            {
+                isEvaluated = true;
+                ExecuteGameOver();
+            }
+        }
+    }
 
     public void StartQuiz(GameObject player)
     {
@@ -125,7 +133,6 @@ public class QuizFloorController : MonoBehaviour
         isQuizActive = true;
     }
 
-    // 🚀プレイヤーが「いずれかの床」に着地した瞬間に呼ばれる
     public void OnPlayerEnterFloor(GameObject steppedFloor)
     {
         if (isQuizStage && !isQuizActive)
@@ -133,8 +140,6 @@ public class QuizFloorController : MonoBehaviour
             isQuizActive = true;
         }
 
-        // 💡 【ここを追記！】
-        // 3つのレーンをチェックして、沼スクリプトがついている床があれば通知を送る
         for (int i = 0; i < lanes.Length; i++)
         {
             if (lanes[i] == null) continue;
@@ -144,18 +149,17 @@ public class QuizFloorController : MonoBehaviour
             {
                 if (lanes[i] == steppedFloor)
                 {
-                    mud.OnPlayerStepOn(); // 今踏んだのが沼なら減速スイッチON
+                    mud.OnPlayerStepOn();
                 }
                 else
                 {
-                    mud.OnPlayerStepOff(); // 沼以外のレーンに移ったら解除
+                    mud.OnPlayerStepOff();
                 }
             }
         }
 
         if (!isQuizStage || !isQuizActive || isTrapTriggered) return;
 
-        // 踏まれた床が、ハズレの床（赤）と同じものだったら
         if (trapLane >= 0 && trapLane < 3 && lanes[trapLane] == steppedFloor)
         {
             TriggerTrap();
@@ -166,56 +170,42 @@ public class QuizFloorController : MonoBehaviour
         }
     }
 
-    // 🚀ハズレ床を奈落に落とす
     private void TriggerTrap()
     {
-        isTrapTriggered = true; // 重複発動防止
+        isTrapTriggered = true;
 
         if (trapLane >= 0 && trapLane < 3 && lanes[trapLane] != null)
         {
-            string[] laneNames = { "左レーン", "中央レーン", "右レーン" };
+            string[] laneNames = { "左レーン", "中央レーン", "rightレーン" };
             Debug.Log($"🎯 【赤い床を完全検知！】⇒ 【{laneNames[trapLane]}】が落ちます！");
 
             var col = lanes[trapLane].GetComponent<Collider>();
             if (col != null) col.isTrigger = true;
 
-            // 赤い床自体をローカル座標の下方に瞬間移動（奈落へ落とす）
             Vector3 targetLocalPos = lanes[trapLane].transform.localPosition;
             targetLocalPos.y = -100f;
             lanes[trapLane].transform.localPosition = targetLocalPos;
 
-            Invoke("EvaluateResult", 0.1f);
+            // 💡 ここでの Invoke("EvaluateResult") は廃止して、実際の落下を待ちます。
         }
     }
 
-    private void EvaluateResult()
+    // 💡 プレイヤーが完全に落下した瞬間に、本物のGameOverPanelを一括で呼び出す処理
+    private void ExecuteGameOver()
     {
-        if (!isQuizStage || isEvaluated || playerTransform == null) return;
-        isEvaluated = true;
-
-        int playerLaneIndex = 1;
-        float playerX = playerTransform.position.x;
-        if (playerX < -1.5f) playerLaneIndex = 0;
-        else if (playerX > 1.5f) playerLaneIndex = 2;
-        else playerLaneIndex = 1;
-
         string[] laneNames = { "左レーン", "中央レーン", "右レーン" };
+        Debug.Log($"ゲームオーバー！ハズレの【{laneNames[trapLane]}】から完全に落下しました！");
 
-        if (playerLaneIndex == trapLane)
+        GameOverManager gameOverManager = FindAnyObjectByType<GameOverManager>();
+        if (gameOverManager != null)
         {
-            Debug.Log($"ゲームオーバー！ハズレの【{laneNames[trapLane]}】を走ったため落下！");
-            if (playerController != null) playerController.forwardSpeed = 0f;
-
-            Rigidbody playerRb = playerTransform.GetComponent<Rigidbody>();
-            if (playerRb != null)
-            {
-                playerRb.isKinematic = false;
-                playerRb.useGravity = true;
-            }
+            gameOverManager.TriggerGameOver(); // ✨本物の一括管理パネルを起動！
         }
         else
         {
-            Debug.Log($"正解！セーフ！");
+            // バックアップ用処理
+            if (playerController != null) playerController.forwardSpeed = 0f;
+            Time.timeScale = 0f;
         }
     }
 }

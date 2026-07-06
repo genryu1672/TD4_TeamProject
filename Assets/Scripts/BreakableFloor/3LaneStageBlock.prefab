@@ -45,6 +45,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::QuizFloorController
   isQuizStage: 0
-  currentSelectedLane: 0
-  laneDistance: 1.5
   slowForwardSpeed: 3
+  leftFloor: {fileID: 0}
+  centerFloor: {fileID: 0}
+  rightFloor: {fileID: 0}
