@@ -137,33 +137,40 @@ public class MapGenerator : MonoBehaviour
     {
         if (obstaclePrefab == null) return;
 
-        // 💡 沼になっているレーンの上には障害物を置かないよう、すでにSlowMudZoneが子供にあるかチェック
-        if (parentBlock.GetComponentInChildren<SlowMudZone>() != null) return;
-
+        // 1. ランダムにレーン（0〜2）を決める
         int randomLane = Random.Range(0, 3);
 
-        string spawnPointName = "";
+        QuizFloorController quiz = parentBlock.GetComponent<QuizFloorController>();
+        if (quiz == null) return;
+
+        // 2. 決まったレーンに応じた「床オブジェクト」を取得する
+        GameObject targetFloor = null;
         switch (randomLane)
         {
-            case 0: spawnPointName = "SpawnPoint_Left"; break;
-            case 1: spawnPointName = "SpawnPoint_Center"; break;
-            case 2: spawnPointName = "SpawnPoint_Right"; break;
+            case 0: targetFloor = quiz.leftFloor; break;
+            case 1: targetFloor = quiz.centerFloor; break;
+            case 2: targetFloor = quiz.rightFloor; break;
         }
 
-        Transform spawnPoint = parentBlock.transform.Find(spawnPointName);
-        if (spawnPoint == null)
+        if (targetFloor == null) return;
+
+        // 💡【チェック】もしその床が「沼（SlowMudZone）」なら障害物は置かない
+        if (targetFloor.GetComponent<SlowMudZone>() != null)
         {
-            Debug.LogWarning("Parent block " + parentBlock.name + " is missing a child object named: " + spawnPointName + ". Obstacle spawning skipped.");
+            Debug.Log("⚠️ 選んだレーンが沼なので障害物の生成をスキップしました");
             return;
         }
 
-        // 💡 浮いていた古い沼プレファブ生成処理は消去し、通常の障害物（いつものCube）だけを生成する形に一本化
-        Vector3 localSpawnPosition = new Vector3(0f, obstacleSpawnY, blockLength / 2f);
+        // 3. 床のローカル座標（特にX座標）を基準にして障害物を生成する
+        // X座標は床の位置、Z座標はブロックの真ん中（blockLength / 2f）
+        Vector3 localSpawnPosition = new Vector3(targetFloor.transform.localPosition.x, obstacleSpawnY, blockLength / 2f);
 
         GameObject obstacle = Instantiate(obstaclePrefab, Vector3.zero, Quaternion.identity);
 
         obstacle.transform.SetParent(parentBlock.transform);
         obstacle.transform.localPosition = localSpawnPosition;
+
+        Debug.Log($"📦 {targetFloor.name} のレーンに障害物を生成しました！");
     }
 
     void GenerateRandomCoins(GameObject parentBlock)
