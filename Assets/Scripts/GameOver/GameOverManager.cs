@@ -10,7 +10,10 @@ public class GameOverManager : MonoBehaviour
     [Header("ゲームオーバー画面のタイム用TMPテキスト")]
     public TextMeshProUGUI timeText;
 
-    // 🎵 BGM追加箇所：インスペクターからセットするための変数
+    // 🎵 BGM追加：インスペクターから曲を設定できるようにする変数
+    [Header("🎵 ゲームプレイ中のBGM")]
+    public AudioClip gamePlayBGM;
+
     [Header("🎵 ゲームオーバー時のBGM")]
     public AudioClip gameOverBGM;
 
@@ -39,6 +42,24 @@ public class GameOverManager : MonoBehaviour
         }
 
         if (gameOverPanel != null) gameOverPanel.SetActive(false);
+
+        // 🌟【新機能】タイトルから引き継いだ不死身のBGMマネージャーをプレイ中の曲に変える
+        GameObject playBgmObj = GameObject.Find("BGM_Manager");
+        if (playBgmObj != null)
+        {
+            AudioSource audioSource = playBgmObj.GetComponent<AudioSource>();
+            if (audioSource != null && gamePlayBGM != null)
+            {
+                // 💡 現在の曲がプレイBGMと違う、または「まだ何も曲がセットされていない(null)」なら再生する
+                if (audioSource.clip != gamePlayBGM || audioSource.clip == null)
+                {
+                    audioSource.Stop();             // タイトル曲（または前の曲）を止める
+                    audioSource.clip = gamePlayBGM; // プレイ中の曲をセット
+                    audioSource.loop = true;        // ループ再生にする
+                    audioSource.Play();             // 確実に再生スタート！
+                }
+            }
+        }
     }
 
     void Update()
@@ -56,14 +77,14 @@ public class GameOverManager : MonoBehaviour
 
         Debug.Log("【ゲームオーバー】一括管理システムが発動しました。");
 
-        // 🎵 BGM追加箇所：プレイ中のBGM（BGM_Manager）を止め、ゲームオーバーの音楽を流す
+        // 🎵 BGM切り替え：ゲームオーバーになったら曲を切り替える
         GameObject playBgmObj = GameObject.Find("BGM_Manager");
         if (playBgmObj != null)
         {
             AudioSource audioSource = playBgmObj.GetComponent<AudioSource>();
             if (audioSource != null && gameOverBGM != null)
             {
-                audioSource.Stop();             // プレイ中のBGMを停止
+                audioSource.Stop();             // プレイBGMを停止
                 audioSource.clip = gameOverBGM; // ゲームオーバーBGMをセット
                 audioSource.loop = true;        // ループ再生にする
                 audioSource.Play();             // 再生！
@@ -74,9 +95,8 @@ public class GameOverManager : MonoBehaviour
         if (timeText != null)
         {
             timeText.text = "TIME: " + survivalTime.ToString("F2") + "s";
-            timeText.alignment = TextAlignmentOptions.Center; // ✨強制中央揃え
+            timeText.alignment = TextAlignmentOptions.Center;
 
-            // 💡 タイムを「SCOREの上（高さ：-80）」に配置
             RectTransform timeRect = timeText.GetComponent<RectTransform>();
             if (timeRect != null)
             {
@@ -93,7 +113,6 @@ public class GameOverManager : MonoBehaviour
         {
             currentScoreObj.transform.SetParent(gameOverPanel.transform);
 
-            // 💡 スコアを「TIMEの下（高さ：-140）」に配置
             RectTransform scoreRect = currentScoreObj.GetComponent<RectTransform>();
             if (scoreRect != null)
             {
@@ -106,7 +125,7 @@ public class GameOverManager : MonoBehaviour
             TextMeshProUGUI scoreTMP = currentScoreObj.GetComponent<TextMeshProUGUI>();
             if (scoreTMP != null)
             {
-                scoreTMP.alignment = TextAlignmentOptions.Center; // ✨強制中央揃え
+                scoreTMP.alignment = TextAlignmentOptions.Center;
             }
         }
 
