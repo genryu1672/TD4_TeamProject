@@ -87,7 +87,14 @@ public class QuizFloorController : MonoBehaviour
                 var trapRenderer = lanes[trapLane].GetComponent<MeshRenderer>();
                 if (trapRenderer != null)
                 {
+                    // 1. 基本の色（ベースカラー）を赤にする
                     trapRenderer.material.color = Color.red;
+
+                    // 2. マテリアルの発光（Emission）機能をONにする
+                    trapRenderer.material.EnableKeyword("_EMISSION");
+
+                    // 3. 発光色（Emission Color）に強い赤を設定して光らせる（1.5fや2.0fを掛けるとより眩しく光ります）
+                    trapRenderer.material.SetColor("_EmissionColor", Color.red * 2.0f);
                 }
             }
         }

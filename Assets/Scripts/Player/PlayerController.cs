@@ -19,9 +19,9 @@ public class PlayerController : MonoBehaviour
     private int currentLane = 1;
 
     [Header("ジャンプ設定")]
-    public float jumpForce = 12f;          // 💡 少し高さを出すために12に調整（インスペクターで変更可）
-    public float jumpGravityMultiplier = 3.0f; // 💡 ジャンプ上昇中の重力倍率（フワフワ防止）
-    public float fallMultiplier = 5.0f;     // 💡 落下中の重力倍率（サッと降りる）
+    public float jumpForce = 12f;
+    public float jumpGravityMultiplier = 3.0f;
+    public float fallMultiplier = 5.0f;
 
     private Rigidbody rb;
     private bool isGrounded = true;
@@ -44,21 +44,35 @@ public class PlayerController : MonoBehaviour
     {
         if (Keyboard.current == null) return;
 
-        // 💡 【リトライ機能を追加】
-        // Time.timeScaleが0（ゲームオーバーやポーズ中）でも関係なく、Rキーが押されたらリトライします
-        if (Keyboard.current.rKey.wasPressedThisFrame)
+        // 🌟【注目：ここを修正しました！】
+        // Time.timeScale == 0f のとき（ゲームオーバー中など）のみ、RキーとESCキーを受け付けます
+        if (Time.timeScale == 0f)
         {
-            RetryGame();
-            return; // シーンが切り替わるので、以降の処理はスキップ
+            // Rキーでリトライ
+            if (Keyboard.current.rKey.wasPressedThisFrame)
+            {
+                RetryGame();
+                return;
+            }
+
+            // ESCキーでタイトルへ戻る
+            if (Keyboard.current.escapeKey.wasPressedThisFrame)
+            {
+                ReturnToTitle();
+                return;
+            }
+
+            // ゲームオーバー中は、これ以降の移動やジャンプの処理を一切行わない
+            return;
         }
 
-        if (Time.timeScale == 0f) return;
+        // -------------------------------------------------------------
+        // 👇 ここから下は、通常プレイ中（Time.timeScale != 0f）のみ動く処理
+        // -------------------------------------------------------------
 
         if (forwardSpeed < maxSpeed)
         {
-            // 💡 【加速力アップ！】
             forwardSpeed += speedIncreaseRate * (forwardSpeed * 0.2f) * Time.deltaTime;
-
             if (forwardSpeed > maxSpeed) forwardSpeed = maxSpeed;
         }
 
@@ -93,22 +107,18 @@ public class PlayerController : MonoBehaviour
 
         float yVelocity = rb.linearVelocity.y;
 
-        // 💡 【ジャンプの挙動をクッキリ修正】
         if (!isGrounded)
         {
             if (yVelocity < 0)
             {
-                // ① 頂点から落ちるとき（一瞬で着地させる）
                 yVelocity += Physics.gravity.y * (fallMultiplier - 1) * Time.fixedDeltaTime;
             }
             else if (yVelocity > 0)
             {
-                // ② ボタンを押して上昇中（ここにも重力をかけてフワフワ感をなくす）
                 yVelocity += Physics.gravity.y * (jumpGravityMultiplier - 1) * Time.fixedDeltaTime;
             }
         }
 
-        // Z軸は完全に0で固定
         rb.linearVelocity = new Vector3(xVelocity, yVelocity, 0f);
         transform.rotation = Quaternion.identity;
     }
@@ -129,25 +139,19 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    // 💡 【リトライの実行処理】
     void RetryGame()
     {
-        // 🚀 シーンが切り替わる（リセットされる）直前に、ハイスコアを保存する命令を出す
         if (ScoreManager.Instance != null)
         {
             ScoreManager.Instance.SaveHighScore();
         }
-
-        // 現在開いているシーンの名前を取得
         string currentSceneName = SceneManager.GetActiveScene().name;
-        // 同じシーンを最初からロードし直す
         SceneManager.LoadScene(currentSceneName);
     }
 
     private void OnCollisionStay(Collision c) { if (c.gameObject.CompareTag("Ground")) isGrounded = true; }
     private void OnCollisionExit(Collision c) { if (c.gameObject.CompareTag("Ground")) isGrounded = false; }
 
-    // 🚀 クイズ開始時にレーン位置を中央（1）に強制リセットする関数
     public void ResetToCenterLane()
     {
         currentLane = 1;
@@ -155,9 +159,17 @@ public class PlayerController : MonoBehaviour
         transform.position = new Vector3(0f, transform.position.y, transform.position.z);
     }
 
-    // 🚀 クイズ判定時に、今どのレーンにいるかをクイズ側に教える関数 (0:左, 1:中央, 2:右)
     public int GetCurrentLane()
     {
         return currentLane;
+    }
+
+    void ReturnToTitle()
+    {
+        if (ScoreManager.Instance != null)
+        {
+            ScoreManager.Instance.SaveHighScore();
+        }
+        SceneManager.LoadScene("Title");
     }
 }
