@@ -10,6 +10,10 @@ public class GameOverManager : MonoBehaviour
     [Header("ゲームオーバー画面のタイム用TMPテキスト")]
     public TextMeshProUGUI timeText;
 
+    // 🎵 BGM追加箇所：インスペクターからセットするための変数
+    [Header("🎵 ゲームオーバー時のBGM")]
+    public AudioClip gameOverBGM;
+
     private float survivalTime = 0f;
     private bool isGameOver = false;
 
@@ -51,6 +55,20 @@ public class GameOverManager : MonoBehaviour
         isGameOver = true;
 
         Debug.Log("【ゲームオーバー】一括管理システムが発動しました。");
+
+        // 🎵 BGM追加箇所：プレイ中のBGM（BGM_Manager）を止め、ゲームオーバーの音楽を流す
+        GameObject playBgmObj = GameObject.Find("BGM_Manager");
+        if (playBgmObj != null)
+        {
+            AudioSource audioSource = playBgmObj.GetComponent<AudioSource>();
+            if (audioSource != null && gameOverBGM != null)
+            {
+                audioSource.Stop();             // プレイ中のBGMを停止
+                audioSource.clip = gameOverBGM; // ゲームオーバーBGMをセット
+                audioSource.loop = true;        // ループ再生にする
+                audioSource.Play();             // 再生！
+            }
+        }
 
         // 1. タイムテキストの文字を更新し、中央揃えを強制する
         if (timeText != null)
