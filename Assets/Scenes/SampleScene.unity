@@ -707,6 +707,7 @@ MonoBehaviour:
   stageBlockPrefab: {fileID: 523017407027665912, guid: 06f1b54665369b742a064ffbf7604a3e, type: 3}
   obstaclePrefab: {fileID: 6524439448423755194, guid: cfcbe138960134e4881e94653134ff9d, type: 3}
   speedDownZonePrefab: {fileID: 0}
+  mudMaterial: {fileID: 2100000, guid: fe6683ae80bd50744a2ea7c5df2558aa, type: 2}
   playerTransform: {fileID: 3401199752134227623, guid: 8bae42dc3e27dda40a87b4540761f27d, type: 3}
   blockLength: 30
   maxBlocks: 5

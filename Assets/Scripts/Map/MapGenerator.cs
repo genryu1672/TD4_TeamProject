@@ -12,6 +12,9 @@ public class MapGenerator : MonoBehaviour
     [Header("減速床のプレファブ (※別スクリプト化したため使用しません)")]
     public GameObject speedDownZonePrefab;
 
+    [Header("減速床のマテリアル（SpeedDownZoneMaterial）")]
+    public Material mudMaterial;
+
     [Header("追従するプレイヤーのTransform (※床移動型なので基本不要ですが残します)")]
     public Transform playerTransform;
 
@@ -103,7 +106,6 @@ public class MapGenerator : MonoBehaviour
         {
             quiz.InitializeQuizState(shouldBeQuiz);
 
-            // 💡【ここを追記！】
             // クイズステージじゃない普通の床のとき、30%の確率で「沼レーン」を1つ作る
             if (!shouldBeQuiz && Random.Range(0f, 1f) < 0.30f)
             {
@@ -116,9 +118,19 @@ public class MapGenerator : MonoBehaviour
 
                 if (targetFloor != null)
                 {
-                    // 🎨 見た目を沼っぽく茶色にする
+                    // 🎨 見た目を「泥のマテリアル」に差し替えて明るく設定する
                     var renderer = targetFloor.GetComponent<MeshRenderer>();
-                    if (renderer != null) renderer.material.color = new Color(0.4f, 0.25f, 0.15f);
+                    if (renderer != null && mudMaterial != null)
+                    {
+                        // 🟢 ここでマテリアルを泥に変更！
+                        renderer.material = mudMaterial;
+
+                        // 色を「真っ白」にして画像自体の明るさを100%引き出す
+                        renderer.material.color = Color.white;
+
+                        // テカテカした嫌な反射（光沢）をゼロにしてマットで見やすくする
+                        renderer.material.SetFloat("_Smoothness", 0.0f);
+                    }
 
                     // 🛠️ 【超重要】ここで別スクリプト（SlowMudZone）をリアルタイムでペタッと貼り付ける！
                     targetFloor.AddComponent<SlowMudZone>();
@@ -137,13 +149,11 @@ public class MapGenerator : MonoBehaviour
     {
         if (obstaclePrefab == null) return;
 
-        // 1. ランダムにレーン（0〜2）を決める
         int randomLane = Random.Range(0, 3);
 
         QuizFloorController quiz = parentBlock.GetComponent<QuizFloorController>();
         if (quiz == null) return;
 
-        // 2. 決まったレーンに応じた「床オブジェクト」を取得する
         GameObject targetFloor = null;
         switch (randomLane)
         {
@@ -154,15 +164,12 @@ public class MapGenerator : MonoBehaviour
 
         if (targetFloor == null) return;
 
-        // 💡【チェック】もしその床が「沼（SlowMudZone）」なら障害物は置かない
         if (targetFloor.GetComponent<SlowMudZone>() != null)
         {
             Debug.Log("⚠️ 選んだレーンが沼なので障害物の生成をスキップしました");
             return;
         }
 
-        // 3. 床のローカル座標（特にX座標）を基準にして障害物を生成する
-        // X座標は床の位置、Z座標はブロックの真ん中（blockLength / 2f）
         Vector3 localSpawnPosition = new Vector3(targetFloor.transform.localPosition.x, obstacleSpawnY, blockLength / 2f);
 
         GameObject obstacle = Instantiate(obstaclePrefab, Vector3.zero, Quaternion.identity);
