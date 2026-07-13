@@ -158,40 +158,54 @@ public class MapGenerator : MonoBehaviour
         QuizFloorController quiz = parentBlock.GetComponent<QuizFloorController>();
         if (quiz == null) return;
 
-        // ★追加：このブロックがクイズステージ（消える床がある状態）なら、障害物は一切生成しない
+        // クイズステージ（消える床がある状態）なら障害物は一切生成しない
         if (quiz.isQuizStage)
         {
             Debug.Log("🔒 クイズステージ（消える床）なので、障害物の生成をスキップしました。");
             return;
         }
 
-        // ─── ここから下は変更なし（通常の床の処理） ───
-        int randomLane = Random.Range(0, 3);
+        // ─── 🛠️ ここから変更：障害物を増やす処理（最大2レーンまで） ───
 
-        GameObject targetFloor = null;
-        switch (randomLane)
+        // 生成する障害物の数を決定（50%の確率で1個、50%の確率で2個）
+        int obstacleCount = Random.Range(1, 3); // 1か2が選ばれる
+
+        // レーンのインデックス（0:左, 1:中央, 2:右）のリストを用意
+        List<int> availableLanes = new List<int> { 0, 1, 2 };
+
+        for (int i = 0; i < obstacleCount; i++)
         {
-            case 0: targetFloor = quiz.leftFloor; break;
-            case 1: targetFloor = quiz.centerFloor; break;
-            case 2: targetFloor = quiz.rightFloor; break;
+            // 残っているレーンからランダムに1つ選ぶ
+            int listIndex = Random.Range(0, availableLanes.Count);
+            int randomLane = availableLanes[listIndex];
+            availableLanes.RemoveAt(listIndex); // 選んだレーンはリストから除外して重複を防ぐ
+
+            GameObject targetFloor = null;
+            switch (randomLane)
+            {
+                case 0: targetFloor = quiz.leftFloor; break;
+                case 1: targetFloor = quiz.centerFloor; break;
+                case 2: targetFloor = quiz.rightFloor; break;
+            }
+
+            if (targetFloor == null) continue;
+
+            // もしそのレーンが「沼」なら、そこに障害物は置かない（次のレーン処理へ）
+            if (targetFloor.GetComponent<SlowMudZone>() != null)
+            {
+                Debug.Log($"⚠️ {targetFloor.name} は沼なので障害物の生成をスキップしました");
+                continue;
+            }
+
+            // 障害物の生成位置を計算して配置
+            Vector3 localSpawnPosition = new Vector3(targetFloor.transform.localPosition.x, obstacleSpawnY, blockLength / 2f);
+            GameObject obstacle = Instantiate(obstaclePrefab, Vector3.zero, Quaternion.identity);
+
+            obstacle.transform.SetParent(parentBlock.transform);
+            obstacle.transform.localPosition = localSpawnPosition;
+
+            Debug.Log($"📦 {targetFloor.name} のレーンに障害物を生成しました！ ({i + 1}個目)");
         }
-
-        if (targetFloor == null) return;
-
-        if (targetFloor.GetComponent<SlowMudZone>() != null)
-        {
-            Debug.Log("⚠️ 選んだレーンが沼なので障害物の生成をスキップしました");
-            return;
-        }
-
-        Vector3 localSpawnPosition = new Vector3(targetFloor.transform.localPosition.x, obstacleSpawnY, blockLength / 2f);
-
-        GameObject obstacle = Instantiate(obstaclePrefab, Vector3.zero, Quaternion.identity);
-
-        obstacle.transform.SetParent(parentBlock.transform);
-        obstacle.transform.localPosition = localSpawnPosition;
-
-        Debug.Log($"📦 {targetFloor.name} のレーンに障害物を生成しました！");
     }
 
     void GenerateRandomCoins(GameObject parentBlock)
