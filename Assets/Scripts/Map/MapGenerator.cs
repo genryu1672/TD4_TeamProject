@@ -106,8 +106,8 @@ public class MapGenerator : MonoBehaviour
         {
             quiz.InitializeQuizState(shouldBeQuiz);
 
-            // クイズステージじゃない普通の床のとき、30%の確率で「沼レーン」を1つ作る
-            if (!shouldBeQuiz && Random.Range(0f, 1f) < 0.30f)
+            // クイズステージじゃない普通の床のとき、5%の確率で「沼レーン」を1つ作る
+            if (!shouldBeQuiz && Random.Range(0f, 1f) < 0.05f)
             {
                 int randomLane = Random.Range(0, 3);
                 GameObject targetFloor = null;
@@ -138,7 +138,13 @@ public class MapGenerator : MonoBehaviour
             }
         }
 
-        if (spawnObstacle)
+        // ─── 🛠️ 修正後 ───
+        // 次にクイズ床が来るか、または直前にクイズ床があったかを計算します
+        bool nextIsQuiz = (totalSpawnedBlocks + 1 == 5 || (totalSpawnedBlocks + 1 > 5 && (totalSpawnedBlocks + 1 - 5) % 20 == 0));
+        bool prevWasQuiz = (totalSpawnedBlocks - 1 == 5 || (totalSpawnedBlocks - 1 > 5 && (totalSpawnedBlocks - 1 - 5) % 20 == 0));
+
+        // 「今の床」「次の床」「前の床」のどれかがクイズ床なら、このブロックには障害物を出さない！
+        if (spawnObstacle && !shouldBeQuiz && !nextIsQuiz && !prevWasQuiz)
         {
             GenerateRandomObstacles(block);
             GenerateRandomCoins(block);
@@ -149,10 +155,18 @@ public class MapGenerator : MonoBehaviour
     {
         if (obstaclePrefab == null) return;
 
-        int randomLane = Random.Range(0, 3);
-
         QuizFloorController quiz = parentBlock.GetComponent<QuizFloorController>();
         if (quiz == null) return;
+
+        // ★追加：このブロックがクイズステージ（消える床がある状態）なら、障害物は一切生成しない
+        if (quiz.isQuizStage)
+        {
+            Debug.Log("🔒 クイズステージ（消える床）なので、障害物の生成をスキップしました。");
+            return;
+        }
+
+        // ─── ここから下は変更なし（通常の床の処理） ───
+        int randomLane = Random.Range(0, 3);
 
         GameObject targetFloor = null;
         switch (randomLane)

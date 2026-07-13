@@ -15,7 +15,7 @@ public class QuizFloorController : MonoBehaviour
     public GameObject centerFloor;
     public GameObject rightFloor;
 
-    private int trapLane = -1;
+    private int safeLane = -1; // ★修正：trapLaneから「safeLane（安全なレーン）」に変更
     private GameObject[] lanes = new GameObject[3];
     private bool isQuizActive = false;
     private bool isEvaluated = false;
@@ -76,31 +76,32 @@ public class QuizFloorController : MonoBehaviour
         Transform sensor = transform.Find("QuizSensor");
         if (isQuizStage)
         {
-            trapLane = Random.Range(0, 3);
+            safeLane = Random.Range(0, 3); // ★修正：3つのうち「1つだけ安全な床」を決める
             isQuizActive = false;
             isEvaluated = false;
 
             if (sensor != null) sensor.gameObject.SetActive(true);
 
-            if (trapLane >= 0 && trapLane < 3 && lanes[trapLane] != null)
+            // ★修正：安全な床「以外」の2つの床を赤く光らせる
+            for (int i = 0; i < lanes.Length; i++)
             {
-                var trapRenderer = lanes[trapLane].GetComponent<MeshRenderer>();
-                if (trapRenderer != null)
+                if (i == safeLane) continue; // 安全な床はスキップ
+
+                if (lanes[i] != null)
                 {
-                    // 1. 基本の色（ベースカラー）を赤にする
-                    trapRenderer.material.color = Color.red;
-
-                    // 2. マテリアルの発光（Emission）機能をONにする
-                    trapRenderer.material.EnableKeyword("_EMISSION");
-
-                    // 3. 発光色（Emission Color）に強い赤を設定して光らせる（1.5fや2.0fを掛けるとより眩しく光ります）
-                    trapRenderer.material.SetColor("_EmissionColor", Color.red * 2.0f);
+                    var trapRenderer = lanes[i].GetComponent<MeshRenderer>();
+                    if (trapRenderer != null)
+                    {
+                        trapRenderer.material.color = Color.red;
+                        trapRenderer.material.EnableKeyword("_EMISSION");
+                        trapRenderer.material.SetColor("_EmissionColor", Color.red * 2.0f);
+                    }
                 }
             }
         }
         else
         {
-            trapLane = -1;
+            safeLane = -1; // ★修正
             isQuizActive = false;
             isEvaluated = false;
 
@@ -121,10 +122,9 @@ public class QuizFloorController : MonoBehaviour
 
     void FixedUpdate()
     {
-        // 💡 落下中のゲームオーバー判定：プレイヤーが一定の高さ（例：Yが -3以下）まで落ちたらGameOverPanelを呼び出す
         if (isQuizStage && isTrapTriggered && !isEvaluated && playerTransform != null)
         {
-            if (playerTransform.position.y < -3.0f) // ✨この高さまでちゃんと落下したら
+            if (playerTransform.position.y < -3.0f)
             {
                 isEvaluated = true;
                 ExecuteGameOver();
@@ -135,7 +135,7 @@ public class QuizFloorController : MonoBehaviour
     public void StartQuiz(GameObject player)
     {
         if (isQuizStage == false) return;
-        if (trapLane == -1 || isQuizActive) return;
+        if (safeLane == -1 || isQuizActive) return; // ★修正
 
         isQuizActive = true;
     }
@@ -167,9 +167,20 @@ public class QuizFloorController : MonoBehaviour
 
         if (!isQuizStage || !isQuizActive || isTrapTriggered) return;
 
-        if (trapLane >= 0 && trapLane < 3 && lanes[trapLane] == steppedFloor)
+        // ★修正：踏んだ床が「安全な床ではない」なら罠を発動する
+        int steppedLaneIndex = -1;
+        for (int i = 0; i < lanes.Length; i++)
         {
-            TriggerTrap();
+            if (lanes[i] == steppedFloor)
+            {
+                steppedLaneIndex = i;
+                break;
+            }
+        }
+
+        if (steppedLaneIndex != -1 && steppedLaneIndex != safeLane)
+        {
+            TriggerTrap(steppedLaneIndex); // ★修正：踏んだハズレのレーン番号を渡す
         }
         else
         {
@@ -177,40 +188,38 @@ public class QuizFloorController : MonoBehaviour
         }
     }
 
-    private void TriggerTrap()
+    // ★修正：引数で落ちるレーンのインデックスを受け取るように変更
+    private void TriggerTrap(int fallenLane)
     {
         isTrapTriggered = true;
 
-        if (trapLane >= 0 && trapLane < 3 && lanes[trapLane] != null)
+        if (fallenLane >= 0 && fallenLane < 3 && lanes[fallenLane] != null)
         {
-            string[] laneNames = { "左レーン", "中央レーン", "rightレーン" };
-            Debug.Log($"🎯 【赤い床を完全検知！】⇒ 【{laneNames[trapLane]}】が落ちます！");
+            string[] laneNames = { "左レーン", "中央レーン", "右レーン" };
+            Debug.Log($"🎯 【赤い床を完全検知！】⇒ 【{laneNames[fallenLane]}】が落ちます！");
 
-            var col = lanes[trapLane].GetComponent<Collider>();
+            var col = lanes[fallenLane].GetComponent<Collider>();
             if (col != null) col.isTrigger = true;
 
-            Vector3 targetLocalPos = lanes[trapLane].transform.localPosition;
+            Vector3 targetLocalPos = lanes[fallenLane].transform.localPosition;
             targetLocalPos.y = -100f;
-            lanes[trapLane].transform.localPosition = targetLocalPos;
-
-            // 💡 ここでの Invoke("EvaluateResult") は廃止して、実際の落下を待ちます。
+            lanes[fallenLane].transform.localPosition = targetLocalPos;
         }
     }
 
-    // 💡 プレイヤーが完全に落下した瞬間に、本物のGameOverPanelを一括で呼び出す処理
     private void ExecuteGameOver()
     {
+        // ★修正：ログ用に安全だったレーンを表示
         string[] laneNames = { "左レーン", "中央レーン", "右レーン" };
-        Debug.Log($"ゲームオーバー！ハズレの【{laneNames[trapLane]}】から完全に落下しました！");
+        Debug.Log($"ゲームオーバー！正解の【{laneNames[safeLane]}】以外から完全に落下しました！");
 
         GameOverManager gameOverManager = FindAnyObjectByType<GameOverManager>();
         if (gameOverManager != null)
         {
-            gameOverManager.TriggerGameOver(); // ✨本物の一括管理パネルを起動！
+            gameOverManager.TriggerGameOver();
         }
         else
         {
-            // バックアップ用処理
             if (playerController != null) playerController.forwardSpeed = 0f;
             Time.timeScale = 0f;
         }
