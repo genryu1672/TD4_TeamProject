@@ -7,7 +7,7 @@
       "RelativeMoniker": "D:0:0:{BEDD47E1-972B-2D19-EC5F-14F328FA8362}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\gameover\\gameovermanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{BEDD47E1-972B-2D19-EC5F-14F328FA8362}|Assembly-CSharp.csproj|c:\\users\\k023g\\td4_2\u56DE\u76EE\\assets\\scripts\\bgm\\dontdestroybgm.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{BEDD47E1-972B-2D19-EC5F-14F328FA8362}|Assembly-CSharp.csproj|C:\\Users\\k023g\\TD4_2\u56DE\u76EE\\assets\\scripts\\bgm\\dontdestroybgm.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{BEDD47E1-972B-2D19-EC5F-14F328FA8362}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\bgm\\dontdestroybgm.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
@@ -105,19 +105,6 @@
               "Name": "ST:128:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
             },
             {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "DontDestroyBGM.cs",
-              "DocumentMoniker": "C:\\Users\\k023g\\TD4_2\u56DE\u76EE\\Assets\\Scripts\\BGM\\DontDestroyBGM.cs",
-              "RelativeDocumentMoniker": "Assets\\Scripts\\BGM\\DontDestroyBGM.cs",
-              "ToolTip": "C:\\Users\\k023g\\TD4_2\u56DE\u76EE\\Assets\\Scripts\\BGM\\DontDestroyBGM.cs",
-              "RelativeToolTip": "Assets\\Scripts\\BGM\\DontDestroyBGM.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABMAAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-07-10T07:31:36.817Z",
-              "EditorCaption": ""
-            },
-            {
               "$type": "Bookmark",
               "Name": "ST:0:0:{eefa5220-e298-11d0-8f78-00a0c9110057}"
             },
@@ -127,13 +114,25 @@
             },
             {
               "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "DontDestroyBGM.cs",
+              "DocumentMoniker": "C:\\Users\\k023g\\TD4_2\u56DE\u76EE\\Assets\\Scripts\\BGM\\DontDestroyBGM.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\BGM\\DontDestroyBGM.cs",
+              "ToolTip": "C:\\Users\\k023g\\TD4_2\u56DE\u76EE\\Assets\\Scripts\\BGM\\DontDestroyBGM.cs",
+              "RelativeToolTip": "Assets\\Scripts\\BGM\\DontDestroyBGM.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABMAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-07-10T07:31:36.817Z"
+            },
+            {
+              "$type": "Document",
               "DocumentIndex": 0,
               "Title": "GameOverManager.cs",
               "DocumentMoniker": "C:\\Users\\k023g\\TD4_2\u56DE\u76EE\\Assets\\Scripts\\GameOver\\GameOverManager.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\GameOver\\GameOverManager.cs",
               "ToolTip": "C:\\Users\\k023g\\TD4_2\u56DE\u76EE\\Assets\\Scripts\\GameOver\\GameOverManager.cs",
               "RelativeToolTip": "Assets\\Scripts\\GameOver\\GameOverManager.cs",
-              "ViewState": "AgIAACkAAAAAAAAAAADwv4YAAAABAAAAAAAAAA==",
+              "ViewState": "AgIAAGkAAAAAAAAAAAAiwHYAAAA/AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-07-10T07:20:20.237Z",
               "EditorCaption": ""

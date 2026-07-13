@@ -100,7 +100,7 @@ public class GameOverManager : MonoBehaviour
             RectTransform timeRect = timeText.GetComponent<RectTransform>();
             if (timeRect != null)
             {
-                timeRect.anchoredPosition = new Vector2(0f, -80f);
+                timeRect.anchoredPosition = new Vector2(0f, -150f);
                 timeRect.anchorMin = new Vector2(0.5f, 0.5f);
                 timeRect.anchorMax = new Vector2(0.5f, 0.5f);
                 timeRect.pivot = new Vector2(0.5f, 0.5f);
@@ -116,7 +116,7 @@ public class GameOverManager : MonoBehaviour
             RectTransform scoreRect = currentScoreObj.GetComponent<RectTransform>();
             if (scoreRect != null)
             {
-                scoreRect.anchoredPosition = new Vector2(0f, -140f);
+                scoreRect.anchoredPosition = new Vector2(0f, -340f);
                 scoreRect.anchorMin = new Vector2(0.5f, 0.5f);
                 scoreRect.anchorMax = new Vector2(0.5f, 0.5f);
                 scoreRect.pivot = new Vector2(0.5f, 0.5f);
