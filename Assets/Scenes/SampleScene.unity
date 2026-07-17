@@ -710,7 +710,7 @@ MonoBehaviour:
   mudMaterial: {fileID: 2100000, guid: fe6683ae80bd50744a2ea7c5df2558aa, type: 2}
   playerTransform: {fileID: 3401199752134227623, guid: 8bae42dc3e27dda40a87b4540761f27d, type: 3}
   blockLength: 30
-  maxBlocks: 5
+  maxBlocks: 30
   obstacleSpawnY: 1
   mudSpawnChance: 0.2
 --- !u!4 &555531737

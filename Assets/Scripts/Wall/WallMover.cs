@@ -9,7 +9,7 @@ public class WallMover : MonoBehaviour
     [Header("通常時の壁の追従の滑らかさ")]
     public float normalFollowSmooth = 2f;
 
-    [Header("1回ヒット時：プレイヤーのすぐ後ろ何メートルの位置に張り付くか")]
+    [Header("1回ヒット時：プレイヤーのすぐ後ろ何メートルの位置に貼り付くか")]
     public float warningDistance = 3.5f;
 
     [Header("1回ヒット時：壁が近くに留まる時間（秒）")]
@@ -27,14 +27,16 @@ public class WallMover : MonoBehaviour
     void Start()
     {
         GameObject player = GameObject.FindGameObjectWithTag("Player");
+        if (player == null) player = GameObject.Find("Player(Clone)"); // 生成クローン対策
+
         if (player != null)
         {
             playerController = player.GetComponent<PlayerController>();
-            float startZ = 0f - targetDistance;
+            // 💡 初期位置も、プレイヤーの「実際のZ座標」から通常距離（8m）引いた位置にする
+            float startZ = player.transform.position.z - targetDistance;
             transform.position = new Vector3(transform.position.x, transform.position.y, startZ);
         }
 
-        // 💡 こちらも FindAny に変更！
         gameOverManager = FindAnyObjectByType<GameOverManager>();
     }
 
@@ -48,20 +50,23 @@ public class WallMover : MonoBehaviour
         float currentY = transform.position.y;
         float targetZ = transform.position.z;
 
+        // 💡 リアルタイムでプレイヤーの現在のZ座標を取得
+        float playerZ = playerController.transform.position.z;
+
         if (isPenalizing)
         {
-            targetZ = 0f - warningDistance;
+            // 💡【修正】固定の「0」ではなく、「今のプレイヤーのZ」からwarningDistanceを引いた位置にがっちり固定！
+            targetZ = playerZ - warningDistance;
         }
         else
         {
-            targetZ -= currentScrollSpeed * Time.deltaTime;
-            if (transform.position.z < -targetDistance)
-            {
-                targetZ = Mathf.Lerp(transform.position.z, 0f - targetDistance, normalFollowSmooth * Time.deltaTime);
-            }
+            // 💡【通常時】プレイヤーの後ろ（-targetDistance）の位置を滑らかに追いかけます
+            float normalTargetZ = playerZ - targetDistance;
+            targetZ = Mathf.Lerp(transform.position.z, normalTargetZ, normalFollowSmooth * Time.deltaTime);
         }
 
-        transform.position = new Vector3(currentX, currentY, targetZ);
+        // X座標とY座標もプレイヤーにぴったり合わせてズレを防ぎます
+        transform.position = new Vector3(playerController.transform.position.x, playerController.transform.position.y, targetZ);
     }
 
     public void HandleObstacleHit()
@@ -72,8 +77,15 @@ public class WallMover : MonoBehaviour
 
         if (penaltyLevel == 1)
         {
-            Debug.Log("【警告】障害物に1回接触！");
-            transform.position = new Vector3(transform.position.x, transform.position.y, 0f - warningDistance);
+            Debug.Log("【警告】障害物に1回接触！壁が背後に急接近します！");
+
+            // 💡【修正】当たったその瞬間、壁を「今のプレイヤーのZ座標 - 3.5m」の位置へワープさせます！
+            if (playerController != null)
+            {
+                float targetZ = playerController.transform.position.z - warningDistance;
+                transform.position = new Vector3(playerController.transform.position.x, playerController.transform.position.y, targetZ);
+            }
+
             isPenalizing = true;
 
             if (penaltyCoroutine != null) StopCoroutine(penaltyCoroutine);
@@ -81,6 +93,7 @@ public class WallMover : MonoBehaviour
         }
         else if (penaltyLevel >= 2)
         {
+            Debug.Log("💀 ペナルティ2回目！ゲームオーバーを呼び出します。");
             CallGameOver();
         }
     }
@@ -90,17 +103,24 @@ public class WallMover : MonoBehaviour
         yield return new WaitForSeconds(penaltyDuration);
         isPenalizing = false;
         penaltyLevel = 0;
+        Debug.Log("🛡️ 警告時間終了。壁が通常距離（8m）に下がります。");
     }
 
-    private void OnTriggerEnter(Collider other)
+    // 💡 急接近した際、壁のコライダーが物理的にプレイヤーに触れてしまった時の即死を防ぐため、
+    //「本当に背後から追いつかれた（距離が1m以下になった）とき」だけゲームオーバーにする
+    private void OnTriggerStay(Collider other)
     {
         if (other.CompareTag("Player") && Time.timeScale > 0f)
         {
-            if (penaltyLevel >= 2) CallGameOver();
+            float distanceZ = Mathf.Abs(other.transform.position.z - transform.position.z);
+            if (distanceZ <= 1.0f)
+            {
+                Debug.Log("💀 壁に完全に追いつかれました！");
+                CallGameOver();
+            }
         }
     }
 
-    // 💡 管理人にゲームオーバーを要請する
     private void CallGameOver()
     {
         if (gameOverManager != null)
@@ -109,7 +129,15 @@ public class WallMover : MonoBehaviour
         }
         else
         {
-            Debug.LogError("⚠️ GameOverManagerが見つかりません！GameManagerオブジェクトにあるか確認してください。");
+            // 💡 もしGameOverManagerがシーンになく、GameManagerが管理している場合はこちらで代用
+            if (GameManager.Instance != null)
+            {
+                GameManager.Instance.TriggerGameOver();
+            }
+            else
+            {
+                Debug.LogError("⚠️ ゲームオーバー管理スクリプトが見つかりません。");
+            }
         }
     }
 }

@@ -11,16 +11,24 @@
       "RelativeMoniker": "D:0:0:{BEDD47E1-972B-2D19-EC5F-14F328FA8362}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\player\\playercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{BEDD47E1-972B-2D19-EC5F-14F328FA8362}|Assembly-CSharp.csproj|C:\\Users\\k023g\\TD4_2\u56DE\u76EE\\assets\\scripts\\breakablefloor\\quizfloorcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{BEDD47E1-972B-2D19-EC5F-14F328FA8362}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\breakablefloor\\quizfloorcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{BEDD47E1-972B-2D19-EC5F-14F328FA8362}|Assembly-CSharp.csproj|C:\\Users\\k023g\\TD4_2\u56DE\u76EE\\assets\\scripts\\map\\slowmudzone.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{BEDD47E1-972B-2D19-EC5F-14F328FA8362}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\map\\slowmudzone.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
+      "AbsoluteMoniker": "D:0:0:{BEDD47E1-972B-2D19-EC5F-14F328FA8362}|Assembly-CSharp.csproj|C:\\Users\\k023g\\TD4_2\u56DE\u76EE\\assets\\scripts\\breakablefloor\\quizfloorcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BEDD47E1-972B-2D19-EC5F-14F328FA8362}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\breakablefloor\\quizfloorcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BEDD47E1-972B-2D19-EC5F-14F328FA8362}|Assembly-CSharp.csproj|C:\\Users\\k023g\\TD4_2\u56DE\u76EE\\assets\\scripts\\scoremanager\\scoreui.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BEDD47E1-972B-2D19-EC5F-14F328FA8362}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\scoremanager\\scoreui.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{BEDD47E1-972B-2D19-EC5F-14F328FA8362}|Assembly-CSharp.csproj|C:\\Users\\k023g\\TD4_2\u56DE\u76EE\\assets\\scripts\\breakablefloor\\quizfloorchild.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{BEDD47E1-972B-2D19-EC5F-14F328FA8362}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\breakablefloor\\quizfloorchild.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BEDD47E1-972B-2D19-EC5F-14F328FA8362}|Assembly-CSharp.csproj|C:\\Users\\k023g\\TD4_2\u56DE\u76EE\\assets\\scripts\\breakablefloor\\floorsensor.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BEDD47E1-972B-2D19-EC5F-14F328FA8362}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\breakablefloor\\floorsensor.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{BEDD47E1-972B-2D19-EC5F-14F328FA8362}|Assembly-CSharp.csproj|C:\\Users\\k023g\\TD4_2\u56DE\u76EE\\assets\\scripts\\gameover\\gameovermanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -59,16 +67,8 @@
       "RelativeMoniker": "D:0:0:{BEDD47E1-972B-2D19-EC5F-14F328FA8362}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\coin\\coinmanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{BEDD47E1-972B-2D19-EC5F-14F328FA8362}|Assembly-CSharp.csproj|C:\\Users\\k023g\\TD4_2\u56DE\u76EE\\assets\\scripts\\scoremanager\\scoreui.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{BEDD47E1-972B-2D19-EC5F-14F328FA8362}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\scoremanager\\scoreui.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{BEDD47E1-972B-2D19-EC5F-14F328FA8362}|Assembly-CSharp.csproj|C:\\Users\\k023g\\TD4_2\u56DE\u76EE\\assets\\scripts\\scoremanager\\scoremanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{BEDD47E1-972B-2D19-EC5F-14F328FA8362}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\scoremanager\\scoremanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{BEDD47E1-972B-2D19-EC5F-14F328FA8362}|Assembly-CSharp.csproj|C:\\Users\\k023g\\TD4_2\u56DE\u76EE\\assets\\scripts\\breakablefloor\\floorsensor.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{BEDD47E1-972B-2D19-EC5F-14F328FA8362}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\breakablefloor\\floorsensor.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{BEDD47E1-972B-2D19-EC5F-14F328FA8362}|Assembly-CSharp.csproj|C:\\Users\\k023g\\TD4_2\u56DE\u76EE\\assets\\scripts\\map\\infinitestageblock.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -85,10 +85,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{BEDD47E1-972B-2D19-EC5F-14F328FA8362}|Assembly-CSharp.csproj|C:\\Users\\k023g\\TD4_2\u56DE\u76EE\\assets\\scripts\\obstacle\\obstacle.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{BEDD47E1-972B-2D19-EC5F-14F328FA8362}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\obstacle\\obstacle.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\k023g\\TD4_2\u56DE\u76EE\\Assets\\Scripts\\Map\\SpeedDownZone.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Assets\\Scripts\\Map\\SpeedDownZone.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -98,7 +94,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 7,
+          "SelectedChildIndex": 6,
           "Children": [
             {
               "$type": "Bookmark",
@@ -114,7 +110,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 8,
               "Title": "DontDestroyBGM.cs",
               "DocumentMoniker": "C:\\Users\\k023g\\TD4_2\u56DE\u76EE\\Assets\\Scripts\\BGM\\DontDestroyBGM.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\BGM\\DontDestroyBGM.cs",
@@ -126,7 +122,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 7,
               "Title": "GameOverManager.cs",
               "DocumentMoniker": "C:\\Users\\k023g\\TD4_2\u56DE\u76EE\\Assets\\Scripts\\GameOver\\GameOverManager.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\GameOver\\GameOverManager.cs",
@@ -138,7 +134,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 9,
               "Title": "ElectricLine.cs",
               "DocumentMoniker": "C:\\Users\\k023g\\TD4_2\u56DE\u76EE\\Assets\\Scripts\\Wall\\ElectricLine.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Wall\\ElectricLine.cs",
@@ -150,32 +146,20 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 21,
-              "Title": "SpeedDownZone.cs",
-              "DocumentMoniker": "C:\\Users\\k023g\\TD4_2\u56DE\u76EE\\Assets\\Scripts\\Map\\SpeedDownZone.cs",
-              "RelativeDocumentMoniker": "Assets\\Scripts\\Map\\SpeedDownZone.cs",
-              "ToolTip": "C:\\Users\\k023g\\TD4_2\u56DE\u76EE\\Assets\\Scripts\\Map\\SpeedDownZone.cs",
-              "RelativeToolTip": "Assets\\Scripts\\Map\\SpeedDownZone.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAApAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-07-03T07:34:52.227Z"
-            },
-            {
-              "$type": "Document",
               "DocumentIndex": 0,
               "Title": "MapGenerator.cs",
               "DocumentMoniker": "C:\\Users\\k023g\\TD4_2\u56DE\u76EE\\Assets\\Scripts\\Map\\MapGenerator.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Map\\MapGenerator.cs",
               "ToolTip": "C:\\Users\\k023g\\TD4_2\u56DE\u76EE\\Assets\\Scripts\\Map\\MapGenerator.cs",
               "RelativeToolTip": "Assets\\Scripts\\Map\\MapGenerator.cs",
-              "ViewState": "AgIAALkAAAAAAAAAAAAiwNAAAAAFAAAAAAAAAA==",
+              "ViewState": "AgIAADgAAAAAAAAAAAAIwEcAAAApAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-06-19T06:23:13.485Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
+              "DocumentIndex": 11,
               "Title": "SceneSelector.cs",
               "DocumentMoniker": "C:\\Users\\k023g\\TD4_2\u56DE\u76EE\\Assets\\Scripts\\Scene\\SceneSelector.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Scene\\SceneSelector.cs",
@@ -187,27 +171,29 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 2,
               "Title": "SlowMudZone.cs",
               "DocumentMoniker": "C:\\Users\\k023g\\TD4_2\u56DE\u76EE\\Assets\\Scripts\\Map\\SlowMudZone.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Map\\SlowMudZone.cs",
               "ToolTip": "C:\\Users\\k023g\\TD4_2\u56DE\u76EE\\Assets\\Scripts\\Map\\SlowMudZone.cs",
               "RelativeToolTip": "Assets\\Scripts\\Map\\SlowMudZone.cs",
-              "ViewState": "AgIAAA0AAAAAAAAAAAAYwFUAAAAUAAAAAAAAAA==",
+              "ViewState": "AgIAAL8AAAAAAAAAAAAuwMYAAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-07-03T07:50:44.547Z"
+              "WhenOpened": "2026-07-03T07:50:44.547Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 3,
               "Title": "QuizFloorController.cs",
               "DocumentMoniker": "C:\\Users\\k023g\\TD4_2\u56DE\u76EE\\Assets\\Scripts\\BreakableFloor\\QuizFloorController.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\BreakableFloor\\QuizFloorController.cs",
               "ToolTip": "C:\\Users\\k023g\\TD4_2\u56DE\u76EE\\Assets\\Scripts\\BreakableFloor\\QuizFloorController.cs",
               "RelativeToolTip": "Assets\\Scripts\\BreakableFloor\\QuizFloorController.cs",
-              "ViewState": "AgIAAG4AAAAAAAAAAAAkwOIAAAABAAAAAAAAAA==",
+              "ViewState": "AgIAAMwAAAAAAAAAAAAuwOIAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-29T05:18:42.268Z"
+              "WhenOpened": "2026-06-29T05:18:42.268Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
@@ -217,14 +203,14 @@
               "RelativeDocumentMoniker": "Assets\\Scripts\\Player\\PlayerController.cs",
               "ToolTip": "C:\\Users\\k023g\\TD4_2\u56DE\u76EE\\Assets\\Scripts\\Player\\PlayerController.cs",
               "RelativeToolTip": "Assets\\Scripts\\Player\\PlayerController.cs",
-              "ViewState": "AgIAAJMAAAAAAAAAAAAAwK4AAAABAAAAAAAAAA==",
+              "ViewState": "AgIAAMIAAAAAAAAAAAA8wNgAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-06-19T05:09:39.653Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 14,
+              "DocumentIndex": 4,
               "Title": "ScoreUI.cs",
               "DocumentMoniker": "C:\\Users\\k023g\\TD4_2\u56DE\u76EE\\Assets\\Scripts\\ScoreManager\\ScoreUI.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\ScoreManager\\ScoreUI.cs",
@@ -232,35 +218,38 @@
               "RelativeToolTip": "Assets\\Scripts\\ScoreManager\\ScoreUI.cs",
               "ViewState": "AgIAABAAAAAAAAAAAAAgwBgAAAAmAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-07-03T06:24:20.702Z"
+              "WhenOpened": "2026-07-03T06:24:20.702Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 5,
               "Title": "QuizFloorChild.cs",
               "DocumentMoniker": "C:\\Users\\k023g\\TD4_2\u56DE\u76EE\\Assets\\Scripts\\BreakableFloor\\QuizFloorChild.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\BreakableFloor\\QuizFloorChild.cs",
               "ToolTip": "C:\\Users\\k023g\\TD4_2\u56DE\u76EE\\Assets\\Scripts\\BreakableFloor\\QuizFloorChild.cs",
               "RelativeToolTip": "Assets\\Scripts\\BreakableFloor\\QuizFloorChild.cs",
-              "ViewState": "AgIAAAgAAAAAAAAAAADwvx0AAAABAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAB0AAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-07-03T03:44:13.874Z"
+              "WhenOpened": "2026-07-03T03:44:13.874Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 16,
+              "DocumentIndex": 6,
               "Title": "FloorSensor.cs",
               "DocumentMoniker": "C:\\Users\\k023g\\TD4_2\u56DE\u76EE\\Assets\\Scripts\\BreakableFloor\\FloorSensor.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\BreakableFloor\\FloorSensor.cs",
               "ToolTip": "C:\\Users\\k023g\\TD4_2\u56DE\u76EE\\Assets\\Scripts\\BreakableFloor\\FloorSensor.cs",
               "RelativeToolTip": "Assets\\Scripts\\BreakableFloor\\FloorSensor.cs",
-              "ViewState": "AgIAAAMAAAAAAAAAAAAAwA4AAAAbAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAAbAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-26T07:24:50.047Z"
+              "WhenOpened": "2026-06-26T07:24:50.047Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 11,
+              "DocumentIndex": 13,
               "Title": "BreakableFloor.cs",
               "DocumentMoniker": "C:\\Users\\k023g\\TD4_2\u56DE\u76EE\\Assets\\Scripts\\BreakableFloor\\BreakableFloor.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\BreakableFloor\\BreakableFloor.cs",
@@ -272,7 +261,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 13,
+              "DocumentIndex": 15,
               "Title": "CoinManager.cs",
               "DocumentMoniker": "C:\\Users\\k023g\\TD4_2\u56DE\u76EE\\Assets\\Scripts\\Coin\\CoinManager.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Coin\\CoinManager.cs",
@@ -296,7 +285,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 15,
+              "DocumentIndex": 16,
               "Title": "ScoreManager.cs",
               "DocumentMoniker": "C:\\Users\\k023g\\TD4_2\u56DE\u76EE\\Assets\\Scripts\\ScoreManager\\ScoreManager.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\ScoreManager\\ScoreManager.cs",
@@ -320,7 +309,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 12,
+              "DocumentIndex": 14,
               "Title": "StageMover.cs",
               "DocumentMoniker": "C:\\Users\\k023g\\TD4_2\u56DE\u76EE\\Assets\\Scripts\\Map\\StageMover.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Map\\StageMover.cs",
@@ -344,7 +333,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 10,
               "Title": "WallMover.cs",
               "DocumentMoniker": "C:\\Users\\k023g\\TD4_2\u56DE\u76EE\\Assets\\Scripts\\Wall\\WallMover.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Wall\\WallMover.cs",
@@ -356,7 +345,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 10,
+              "DocumentIndex": 12,
               "Title": "GameManager.cs",
               "DocumentMoniker": "C:\\Users\\k023g\\TD4_2\u56DE\u76EE\\Assets\\Scripts\\Map\\GameManager.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Map\\GameManager.cs",
