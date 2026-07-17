@@ -1,4 +1,4 @@
-﻿﻿using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class MapGenerator : MonoBehaviour
@@ -15,7 +15,7 @@ public class MapGenerator : MonoBehaviour
     [Header("減速床のマテリアル（SpeedDownZoneMaterial）")]
     public Material mudMaterial;
 
-    [Header("追従するプレイヤーのTransform (※床移動型なので基本不要ですが残します)")]
+    [Header("追従するプレイヤーのTransform")]
     public Transform playerTransform;
 
     [Header("足場の長さ（Z軸のサイズ）")]
@@ -27,8 +27,6 @@ public class MapGenerator : MonoBehaviour
     [Header("障害物の出現する高さ（普通用）")]
     public float obstacleSpawnY = 1.0f;
 
-    // 💡【復活】沼（蜘蛛の巣）が発生する確率 (0.0 ～ 1.0) 
-    // インスペクターからスライダーで確率を調整できるようにします（初期値20%）
     [Header("沼が発生する確率 (0.0 ～ 1.0)")]
     [Range(0f, 1f)]
     public float mudSpawnChance = 0.2f;
@@ -59,24 +57,41 @@ public class MapGenerator : MonoBehaviour
 
     void Update()
     {
-        if (activeBlocks.Count == 0) return;
+        if (activeBlocks.Count == 0 || playerTransform == null) return;
 
-        GameObject container = GameObject.Find("StageContainer");
-        float currentWorldZ = activeBlocks[0].transform.position.z;
-        float deleteThreshold = -blockLength - 10f;
-
-        // プレイヤーがハズレを踏んで垂直落下（isForcedFalling）に入っている時の安全装置
+        // 💡 プレイヤーがハズレを踏んで垂直落下（isForcedFalling）に入っている時の安全装置
         bool isPlayerForcedFalling = false;
         if (PlayerController.Instance != null && PlayerController.Instance.isForcedFalling)
         {
             isPlayerForcedFalling = true;
         }
 
-        if (currentWorldZ <= deleteThreshold || isPlayerForcedFalling)
+        if (isPlayerForcedFalling)
         {
             SpawnBlock(true);
             RemoveOldBlock();
-            Debug.Log($"🧱 マップ正常巡回：古い床を削除し、前方に新ステージを生成しました。");
+            return;
+        }
+
+        // 💡【時速360km超高速対策】先読みするゆとり距離を「15枚分（450m）」まで超拡大！
+        // プレイヤーの視界（地平線）の遥か彼方まで常に床が完成している状態を作ります。
+        float safetyBuffer = blockLength * 15f; // 15枚分 ＝ 450m
+
+        while (activeBlocks.Count > 0)
+        {
+            float leadingBlockZ = activeBlocks[activeBlocks.Count - 1].transform.position.z;
+
+            // プレイヤーの現在地から最前方までの距離が 450m 未満になったら、追いつくまで1フレームで超高速連打生成
+            if (leadingBlockZ - playerTransform.position.z < safetyBuffer)
+            {
+                SpawnBlock(true);
+                RemoveOldBlock();
+                Debug.Log($"⚡ 超音速先読み：プレイヤーの進路（450m先）に床を連打生成しました。");
+            }
+            else
+            {
+                break;
+            }
         }
     }
 
@@ -109,7 +124,6 @@ public class MapGenerator : MonoBehaviour
         {
             quiz.InitializeQuizState(shouldBeQuiz);
 
-            // 💡【修正】固定の 0.05f から、変数 mudSpawnChance を使う形に戻しました！
             if (!shouldBeQuiz && Random.Range(0f, 1f) < mudSpawnChance)
             {
                 int randomLane = Random.Range(0, 3);
