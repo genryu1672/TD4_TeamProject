@@ -177,7 +177,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_text: "MOVE  AD key\nRule  \u969C\u5BB3\u7269\u306B\u5F53\u305F\u3089\u305A\u30B9\u30B3\u30A2\u3092\u7A3C\u3052\n        
-    \u843D\u3061\u308B\u5E8A\u306B\u306F\u6CE8\u610F\n         \u6E1B\u901F\u5E8A\u306F\u4E57\u3063\u305F\u307B\u3046\u304C\u304A\u5F97"
+    \u843D\u3061\u308B\u5E8A(\u8D64)\u306B\u306F\u6CE8\u610F\n         \u6E1B\u901F\u5E8A(\u8336)\u306F\u4E57\u3063\u305F\u307B\u3046\u304C\u304A\u5F97\n\u969C\u5BB3\u7269\u30C1\u30E3\u30F3\u30B9\u306F\u4E00\u56DE\u3001\u5F53\u305F\u3063\u3066\u3082\n\u4E00\u5B9A\u6642\u9593\u7D4C\u904E\u3057\u305F\u3089\u30C1\u30E3\u30F3\u30B9\u5FA9\u6D3B"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: bb779d5c1f115e44c82aa6f81b029f3f, type: 2}
   m_sharedMaterial: {fileID: -3649477919199228876, guid: bb779d5c1f115e44c82aa6f81b029f3f, type: 2}
@@ -791,7 +791,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -180}
+  m_AnchoredPosition: {x: 0, y: -450}
   m_SizeDelta: {x: 300, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1319701906

@@ -712,6 +712,7 @@ MonoBehaviour:
   blockLength: 30
   maxBlocks: 5
   obstacleSpawnY: 1
+  mudSpawnChance: 0.2
 --- !u!4 &555531737
 Transform:
   m_ObjectHideFlags: 0

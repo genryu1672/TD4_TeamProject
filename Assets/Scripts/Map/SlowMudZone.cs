@@ -2,20 +2,37 @@
 
 public class SlowMudZone : MonoBehaviour
 {
-    [Header("沼に乗っている時の前進スピード")]
-    public float slowForwardSpeed = 30.0f;
+    private static SlowMudZone activeZone = null;
 
-    [Header("沼から出たあとの加速スムーズ度 (値が大きいほど早く元に戻る)")]
-    public float accelerationSpeed = 50.0f;
+    [Header("沼に乗っている時の目標前進スピード (この速度まで落ちる)")]
+    public float slowForwardSpeed = 10.0f;
+
+    [Header("沼に乗った時の減速スピード (値を大きくするほど一瞬でガクッと落ちる)")]
+    public float decelerationSpeed = 120.0f;
+
+    [Header("減速した状態を維持する時間 (秒) (※沼の上から降りた後はすぐ加速します)")]
+    public float slowDuration = 2.0f;
+
+    [Header("元の速度に戻る時の加速スピード (値を小さくするほどノロノロと戻る)")]
+    public float accelerationSpeed = 8.0f;
 
     private float originalSpeedCache = 15f;
+    private float currentTargetSlowSpeed;
     private PlayerController playerController;
-    private bool isPlayerOnMud = false;
-    private bool isRecoveringSpeed = false; // 💡 加速中かどうかのフラグ
+
+    private enum MudState
+    {
+        Normal,
+        SlowingDown, // 沼に乗って減速中
+        StayingSlow, // 沼の上でノロノロ維持中
+        Recovering   // 沼から降りて、その瞬間の速度から元の速度へじわじわ加速中
+    }
+    private MudState currentState = MudState.Normal;
+    private float stateTimer = 0f;
+    private bool isPlayerDirectlyOn = false;
 
     void Start()
     {
-        // シーン内のプレイヤーを安全に取得
         GameObject playerObj = GameObject.FindWithTag("Player");
         if (playerObj == null) playerObj = GameObject.Find("Player(Clone)");
         if (playerObj != null)
@@ -28,66 +45,170 @@ public class SlowMudZone : MonoBehaviour
     {
         if (playerController == null) return;
 
-        // 🐌 沼に乗っている間は速度を強制固定
-        if (isPlayerOnMud)
+        // 🚨【高速すり抜け・通り過ぎ対策セーフティ】
+        if (currentState == MudState.SlowingDown || currentState == MudState.StayingSlow)
         {
-            playerController.forwardSpeed = slowForwardSpeed;
-        }
-        // 📈 沼から降りたあと、元の速度に向かってジワジワ加速させる
-        else if (isRecoveringSpeed)
-        {
-            // 現在の速度から originalSpeedCache まで毎秒 accelerationSpeed ずつ近づける
-            playerController.forwardSpeed = Mathf.MoveTowards(
-                playerController.forwardSpeed,
-                originalSpeedCache,
-                accelerationSpeed * Time.deltaTime
-            );
-
-            // 元の速度に完全に達したら、復帰処理を終了する
-            if (Mathf.Approximately(playerController.forwardSpeed, originalSpeedCache))
+            float distanceZ = playerController.transform.position.z - transform.position.z;
+            if (distanceZ > 15.0f || transform.position.z < -15.0f)
             {
-                playerController.forwardSpeed = originalSpeedCache; // 念のため完全に一致させる
-                isRecoveringSpeed = false;
-                Debug.Log("🏁 沼：元の速度に完全に復帰しました！");
+                if (isPlayerDirectlyOn)
+                {
+                    OnPlayerStepOff();
+                }
             }
+        }
+
+        // 💡【競合対策】自分がアクティブでない場合は、速度操作を一切行わない
+        if (activeZone != null && activeZone != this && currentState != MudState.Normal)
+        {
+            currentState = MudState.Normal;
+            return;
+        }
+
+        switch (currentState)
+        {
+            case MudState.Normal:
+                break;
+
+            case MudState.SlowingDown:
+                // 🐌 沼に乗っている間は目標速度に向かって減速させる
+                playerController.forwardSpeed = Mathf.MoveTowards(
+                    playerController.forwardSpeed,
+                    currentTargetSlowSpeed,
+                    decelerationSpeed * Time.deltaTime
+                );
+
+                if (playerController.forwardSpeed <= currentTargetSlowSpeed ||
+                    Mathf.Approximately(playerController.forwardSpeed, currentTargetSlowSpeed))
+                {
+                    playerController.forwardSpeed = currentTargetSlowSpeed;
+                    currentState = MudState.StayingSlow;
+                    stateTimer = 0f;
+                    Debug.Log($"🐌 沼：最大減速（{currentTargetSlowSpeed}）に到達。");
+                }
+                break;
+
+            case MudState.StayingSlow:
+                // 🛑 沼の上にいる間は低速を絶対固定
+                playerController.forwardSpeed = currentTargetSlowSpeed;
+
+                // プレイヤーがまだ直接沼の上に立っている場合は、タイマーを進めず低速を維持
+                if (isPlayerDirectlyOn)
+                {
+                    stateTimer = 0f;
+                    return;
+                }
+
+                // 沼から降りた後、初めてこの維持タイマーがカウントスタート
+                stateTimer += Time.deltaTime;
+                if (stateTimer >= slowDuration)
+                {
+                    currentState = MudState.Recovering;
+                    Debug.Log($"🕒 沼：脱出後の維持時間が経過。現在の低速から目標 {originalSpeedCache} へ加速を開始！");
+                }
+                break;
+
+            case MudState.Recovering:
+                // 📈 【超重要】減速が途中で終わっていても、その現在の速度から、元のスピードに向かって超ノロノロ加速する
+                playerController.forwardSpeed = Mathf.MoveTowards(
+                    playerController.forwardSpeed,
+                    originalSpeedCache,
+                    accelerationSpeed * Time.deltaTime
+                );
+
+                if (playerController.forwardSpeed >= originalSpeedCache ||
+                    Mathf.Approximately(playerController.forwardSpeed, originalSpeedCache))
+                {
+                    playerController.forwardSpeed = originalSpeedCache;
+                    currentState = MudState.Normal;
+
+                    if (playerController != null)
+                    {
+                        playerController.isSpeedControlledByMud = false;
+                    }
+
+                    if (activeZone == this) activeZone = null;
+                    Debug.Log("🏁 沼：元の速度に完全に復帰しました！");
+                }
+                break;
         }
     }
 
-    // 🚀 クイズ床から呼ばれる（減速開始）
+    // 🚀 プレイヤーが踏んだとき（減速開始）
     public void OnPlayerStepOn()
     {
-        if (playerController == null || isPlayerOnMud) return;
+        if (playerController == null) return;
 
-        isRecoveringSpeed = false; // 加速処理が走っていたら中断
+        isPlayerDirectlyOn = true;
+        playerController.isSpeedControlledByMud = true;
 
-        // 現在のスピードが減速速度より速ければ、元の速度として記憶する
-        // （加速途中でまた沼に入った場合は、その時の速度ではなく大元の速度を維持する）
-        if (!isRecoveringSpeed && playerController.forwardSpeed > slowForwardSpeed)
+        // すでに別の沼を踏んで減速中だった場合、元の通常スピードの記憶を引き継ぐ
+        if (activeZone != null && activeZone != this)
+        {
+            this.originalSpeedCache = activeZone.originalSpeedCache;
+            activeZone.currentState = MudState.Normal;
+        }
+        else if (currentState == MudState.Normal)
         {
             originalSpeedCache = playerController.forwardSpeed;
         }
 
-        isPlayerOnMud = true;
-        Debug.Log("🐌 沼：プレイヤーが乗ったので減速固定を開始しました！");
+        activeZone = this;
+        currentTargetSlowSpeed = slowForwardSpeed;
+
+        if (originalSpeedCache <= slowForwardSpeed)
+        {
+            currentTargetSlowSpeed = originalSpeedCache * 0.5f;
+            Debug.Log($"⚠️ 元々遅いため、沼目標速度を {currentTargetSlowSpeed} に自動調整しました");
+        }
+
+        currentState = MudState.SlowingDown;
+        Debug.Log("🐌 沼：新しく踏んだ沼で減速を開始しました！");
     }
 
-    // 🚀 クイズ床から呼ばれる（減速解除）
+    // 🚀 プレイヤーが降りたとき（減速解除）
     public void OnPlayerStepOff()
     {
-        if (playerController == null || !isPlayerOnMud) return;
+        if (playerController == null) return;
 
-        isPlayerOnMud = false;
-        isRecoveringSpeed = true; // 💡 ここからジワジワ加速を開始する
+        isPlayerDirectlyOn = false;
 
-        Debug.Log("📈 沼：プレイヤーが脱出したので徐々に加速します！");
+        // 💡【ここを修正！】
+        // プレイヤーが沼から降りた瞬間（または通り過ぎた瞬間）は、
+        // 「目標まで落ちるのを待つ」必要がなくなったので、減速中（SlowingDown）であっても、
+        // 即座に「その瞬間の速度からじわじわ加速（Recovering）」へ移行させます！
+        if (currentState == MudState.SlowingDown || currentState == MudState.StayingSlow)
+        {
+            currentState = MudState.Recovering;
+            Debug.Log($"📈 沼：脱出を検知。現在の速度 {playerController.forwardSpeed} から、そのままスムーズに加速復帰を開始します！");
+        }
     }
 
-    // 床が消滅するときに、万が一減速・加速したままだったら瞬時に元の速度に戻す安全装置
+    public void ForceResetToNormal()
+    {
+        currentState = MudState.Normal;
+        if (playerController != null)
+        {
+            playerController.isSpeedControlledByMud = false;
+        }
+    }
+
     void OnDestroy()
     {
-        if ((isPlayerOnMud || isRecoveringSpeed) && playerController != null)
+        if (activeZone == this)
         {
-            playerController.forwardSpeed = originalSpeedCache;
+            activeZone = null;
+
+            if (playerController != null && currentState == MudState.Recovering)
+            {
+                playerController.isSpeedControlledByMud = false;
+                Debug.Log("⚠️ 加速途中で沼オブジェクトが消滅。急ワープを防止し、そのままの速度からプレイヤーの自己加速に委ねました。");
+            }
+            else if (currentState != MudState.Normal && playerController != null)
+            {
+                playerController.forwardSpeed = originalSpeedCache;
+                playerController.isSpeedControlledByMud = false;
+            }
         }
     }
 }

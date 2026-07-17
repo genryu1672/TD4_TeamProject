@@ -157,7 +157,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerController
   forwardSpeed: 5
   laneShiftSpeed: 15
-  speedIncreaseRate: 4
+  speedIncreaseRate: 2
   maxSpeed: 100
   laneDistance: 1.5
   jumpForce: 7

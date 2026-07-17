@@ -23,9 +23,19 @@ public class PlayerController : MonoBehaviour
     public float jumpGravityMultiplier = 3.0f;
     public float fallMultiplier = 5.0f;
 
+    // 💡【追加】強制落下中かどうかのフラグと超重力の設定
+    [HideInInspector]
+    public bool isForcedFalling = false;
+    [Header("強制落下時の超重力倍率")]
+    public float forcedFallGravityMultiplier = 15.0f;
+
     private Rigidbody rb;
     private bool isGrounded = true;
     private float targetXPosition = 0f;
+
+    // 💡【残しました】沼による減速・回復制御中かどうかを判別するフラグ
+    [HideInInspector]
+    public bool isSpeedControlledByMud = false;
 
     void Awake()
     {
@@ -38,48 +48,51 @@ public class PlayerController : MonoBehaviour
         Time.timeScale = 1f;
         rb = GetComponent<Rigidbody>();
         targetXPosition = 0f;
+        isForcedFalling = false; // 初期化
     }
 
     void Update()
     {
         if (Keyboard.current == null) return;
 
-        // 🌟【注目：ここを修正しました！】
-        // Time.timeScale == 0f のとき（ゲームオーバー中など）のみ、RキーとESCキーを受け付けます
         if (Time.timeScale == 0f)
         {
-            // Rキーでリトライ
             if (Keyboard.current.rKey.wasPressedThisFrame)
             {
                 RetryGame();
                 return;
             }
 
-            // ESCキーでタイトルへ戻る
             if (Keyboard.current.escapeKey.wasPressedThisFrame)
             {
                 ReturnToTitle();
                 return;
             }
 
-            // ゲームオーバー中は、これ以降の移動やジャンプの処理を一切行わない
             return;
         }
 
-        // -------------------------------------------------------------
-        // 👇 ここから下は、通常プレイ中（Time.timeScale != 0f）のみ動く処理
-        // -------------------------------------------------------------
+        // 💡【修正】強制落下中でない場合のみ、左右移動とジャンプを受け付ける
+        if (!isForcedFalling)
+        {
+            if (Keyboard.current.aKey.wasPressedThisFrame || Keyboard.current.leftArrowKey.wasPressedThisFrame) MoveLane(false);
+            else if (Keyboard.current.dKey.wasPressedThisFrame || Keyboard.current.rightArrowKey.wasPressedThisFrame) MoveLane(true);
 
-        if (forwardSpeed < maxSpeed)
+            if (Keyboard.current.spaceKey.wasPressedThisFrame) Jump();
+        }
+        else
+        {
+            // 強制落下中は横位置をその場に固定し、前進スピードも即座に完全停止
+            targetXPosition = transform.position.x;
+            forwardSpeed = 0f;
+        }
+
+        // 💡 沼の制御中でなく、かつ強制落下中でない場合のみ自動スピードアップを行う
+        if (!isSpeedControlledByMud && forwardSpeed < maxSpeed && !isForcedFalling)
         {
             forwardSpeed += speedIncreaseRate * (forwardSpeed * 0.2f) * Time.deltaTime;
             if (forwardSpeed > maxSpeed) forwardSpeed = maxSpeed;
         }
-
-        if (Keyboard.current.aKey.wasPressedThisFrame || Keyboard.current.leftArrowKey.wasPressedThisFrame) MoveLane(false);
-        else if (Keyboard.current.dKey.wasPressedThisFrame || Keyboard.current.rightArrowKey.wasPressedThisFrame) MoveLane(true);
-
-        if (Keyboard.current.spaceKey.wasPressedThisFrame) Jump();
 
         if (transform.position.y < -5f)
         {
@@ -94,20 +107,34 @@ public class PlayerController : MonoBehaviour
         float currentX = transform.position.x;
         float xVelocity = 0f;
 
-        if (Mathf.Abs(currentX - targetXPosition) > 0.01f)
+        // 💡【修正】強制落下中でない場合のみ、レーン変更のスライド移動を行う
+        if (!isForcedFalling)
         {
-            float directionX = Mathf.Sign(targetXPosition - currentX);
-            xVelocity = directionX * laneShiftSpeed;
-            float nextX = currentX + xVelocity * Time.fixedDeltaTime;
-            if ((directionX > 0 && nextX > targetXPosition) || (directionX < 0 && nextX < targetXPosition))
+            if (Mathf.Abs(currentX - targetXPosition) > 0.01f)
             {
-                xVelocity = (targetXPosition - currentX) / Time.fixedDeltaTime;
+                float directionX = Mathf.Sign(targetXPosition - currentX);
+                xVelocity = directionX * laneShiftSpeed;
+                float nextX = currentX + xVelocity * Time.fixedDeltaTime;
+                if ((directionX > 0 && nextX > targetXPosition) || (directionX < 0 && nextX < targetXPosition))
+                {
+                    xVelocity = (targetXPosition - currentX) / Time.fixedDeltaTime;
+                }
             }
+        }
+        else
+        {
+            // 強制落下中は横方向の速度を完全に「0」にして、慣性での横滑りを防ぐ
+            xVelocity = 0f;
         }
 
         float yVelocity = rb.linearVelocity.y;
 
-        if (!isGrounded)
+        // 💡【修正】強制落下中は超重力を適用する
+        if (isForcedFalling)
+        {
+            yVelocity += Physics.gravity.y * forcedFallGravityMultiplier * Time.fixedDeltaTime;
+        }
+        else if (!isGrounded)
         {
             if (yVelocity < 0)
             {
@@ -119,7 +146,8 @@ public class PlayerController : MonoBehaviour
             }
         }
 
-        rb.linearVelocity = new Vector3(xVelocity, yVelocity, 0f);
+        // forwardSpeed が 0f になるので、Z軸方向（前進）もピタッとその場で停止します
+        rb.linearVelocity = new Vector3(xVelocity, yVelocity, forwardSpeed);
         transform.rotation = Quaternion.identity;
     }
 
@@ -136,6 +164,20 @@ public class PlayerController : MonoBehaviour
         {
             rb.linearVelocity = new Vector3(rb.linearVelocity.x, jumpForce, 0f);
             isGrounded = false;
+        }
+    }
+
+    // 💡【追加】ハズレ床を踏んだ瞬間に、前進・横移動の全速度をシャットアウトして真下に落とす関数
+    public void ForceStartFalling()
+    {
+        isForcedFalling = true;
+        targetXPosition = transform.position.x; // ターゲット位置を今いる横座標に固定
+        forwardSpeed = 0f;                     // 前進も完全ストップ
+
+        if (rb != null)
+        {
+            // 横(X)と前進(Z)の物理的な速度をその場で完全に 0 にリセットする
+            rb.linearVelocity = new Vector3(0f, rb.linearVelocity.y, 0f);
         }
     }
 

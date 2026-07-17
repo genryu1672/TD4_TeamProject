@@ -27,6 +27,12 @@ public class MapGenerator : MonoBehaviour
     [Header("障害物の出現する高さ（普通用）")]
     public float obstacleSpawnY = 1.0f;
 
+    // 💡【復活】沼（蜘蛛の巣）が発生する確率 (0.0 ～ 1.0) 
+    // インスペクターからスライダーで確率を調整できるようにします（初期値20%）
+    [Header("沼が発生する確率 (0.0 ～ 1.0)")]
+    [Range(0f, 1f)]
+    public float mudSpawnChance = 0.2f;
+
     private List<GameObject> activeBlocks = new List<GameObject>();
     private float nextSpawnZ = 0f;
     private int totalSpawnedBlocks = 0;
@@ -56,24 +62,21 @@ public class MapGenerator : MonoBehaviour
         if (activeBlocks.Count == 0) return;
 
         GameObject container = GameObject.Find("StageContainer");
+        float currentWorldZ = activeBlocks[0].transform.position.z;
+        float deleteThreshold = -blockLength - 10f;
 
-        if (container != null)
+        // プレイヤーがハズレを踏んで垂直落下（isForcedFalling）に入っている時の安全装置
+        bool isPlayerForcedFalling = false;
+        if (PlayerController.Instance != null && PlayerController.Instance.isForcedFalling)
         {
-            float currentWorldZ = activeBlocks[0].transform.localPosition.z + container.transform.position.z;
-
-            if (currentWorldZ <= -blockLength)
-            {
-                SpawnBlock(true);
-                RemoveOldBlock();
-            }
+            isPlayerForcedFalling = true;
         }
-        else
+
+        if (currentWorldZ <= deleteThreshold || isPlayerForcedFalling)
         {
-            if (activeBlocks[0].transform.position.z <= -blockLength)
-            {
-                SpawnBlock(true);
-                RemoveOldBlock();
-            }
+            SpawnBlock(true);
+            RemoveOldBlock();
+            Debug.Log($"🧱 マップ正常巡回：古い床を削除し、前方に新ステージを生成しました。");
         }
     }
 
@@ -106,8 +109,8 @@ public class MapGenerator : MonoBehaviour
         {
             quiz.InitializeQuizState(shouldBeQuiz);
 
-            // クイズステージじゃない普通の床のとき、5%の確率で「沼レーン」を1つ作る
-            if (!shouldBeQuiz && Random.Range(0f, 1f) < 0.05f)
+            // 💡【修正】固定の 0.05f から、変数 mudSpawnChance を使う形に戻しました！
+            if (!shouldBeQuiz && Random.Range(0f, 1f) < mudSpawnChance)
             {
                 int randomLane = Random.Range(0, 3);
                 GameObject targetFloor = null;
@@ -118,32 +121,22 @@ public class MapGenerator : MonoBehaviour
 
                 if (targetFloor != null)
                 {
-                    // 🎨 見た目を「泥のマテリアル」に差し替えて明るく設定する
                     var renderer = targetFloor.GetComponent<MeshRenderer>();
                     if (renderer != null && mudMaterial != null)
                     {
-                        // 🟢 ここでマテリアルを泥に変更！
                         renderer.material = mudMaterial;
-
-                        // 色を「真っ白」にして画像自体の明るさを100%引き出す
                         renderer.material.color = Color.white;
-
-                        // テカテカした嫌な反射（光沢）をゼロにしてマットで見やすくする
                         renderer.material.SetFloat("_Smoothness", 0.0f);
                     }
 
-                    // 🛠️ 【超重要】ここで別スクリプト（SlowMudZone）をリアルタイムでペタッと貼り付ける！
                     targetFloor.AddComponent<SlowMudZone>();
                 }
             }
         }
 
-        // ─── 🛠️ 修正後 ───
-        // 次にクイズ床が来るか、または直前にクイズ床があったかを計算します
         bool nextIsQuiz = (totalSpawnedBlocks + 1 == 5 || (totalSpawnedBlocks + 1 > 5 && (totalSpawnedBlocks + 1 - 5) % 20 == 0));
         bool prevWasQuiz = (totalSpawnedBlocks - 1 == 5 || (totalSpawnedBlocks - 1 > 5 && (totalSpawnedBlocks - 1 - 5) % 20 == 0));
 
-        // 「今の床」「次の床」「前の床」のどれかがクイズ床なら、このブロックには障害物を出さない！
         if (spawnObstacle && !shouldBeQuiz && !nextIsQuiz && !prevWasQuiz)
         {
             GenerateRandomObstacles(block);
@@ -158,27 +151,20 @@ public class MapGenerator : MonoBehaviour
         QuizFloorController quiz = parentBlock.GetComponent<QuizFloorController>();
         if (quiz == null) return;
 
-        // クイズステージ（消える床がある状態）なら障害物は一切生成しない
         if (quiz.isQuizStage)
         {
             Debug.Log("🔒 クイズステージ（消える床）なので、障害物の生成をスキップしました。");
             return;
         }
 
-        // ─── 🛠️ ここから変更：障害物を増やす処理（最大2レーンまで） ───
-
-        // 生成する障害物の数を決定（50%の確率で1個、50%の確率で2個）
-        int obstacleCount = Random.Range(1, 3); // 1か2が選ばれる
-
-        // レーンのインデックス（0:左, 1:中央, 2:右）のリストを用意
+        int obstacleCount = Random.Range(1, 3);
         List<int> availableLanes = new List<int> { 0, 1, 2 };
 
         for (int i = 0; i < obstacleCount; i++)
         {
-            // 残っているレーンからランダムに1つ選ぶ
             int listIndex = Random.Range(0, availableLanes.Count);
             int randomLane = availableLanes[listIndex];
-            availableLanes.RemoveAt(listIndex); // 選んだレーンはリストから除外して重複を防ぐ
+            availableLanes.RemoveAt(listIndex);
 
             GameObject targetFloor = null;
             switch (randomLane)
@@ -190,14 +176,12 @@ public class MapGenerator : MonoBehaviour
 
             if (targetFloor == null) continue;
 
-            // もしそのレーンが「沼」なら、そこに障害物は置かない（次のレーン処理へ）
             if (targetFloor.GetComponent<SlowMudZone>() != null)
             {
                 Debug.Log($"⚠️ {targetFloor.name} は沼なので障害物の生成をスキップしました");
                 continue;
             }
 
-            // 障害物の生成位置を計算して配置
             Vector3 localSpawnPosition = new Vector3(targetFloor.transform.localPosition.x, obstacleSpawnY, blockLength / 2f);
             GameObject obstacle = Instantiate(obstaclePrefab, Vector3.zero, Quaternion.identity);
 
