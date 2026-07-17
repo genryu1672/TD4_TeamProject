@@ -157,12 +157,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerController
   forwardSpeed: 5
   laneShiftSpeed: 15
-  speedIncreaseRate: 2
+  speedIncreaseRate: 1.5
   maxSpeed: 100
   laneDistance: 1.5
   jumpForce: 7
   jumpGravityMultiplier: 3
   fallMultiplier: 5
+  isForcedFalling: 0
+  forcedFallGravityMultiplier: 15
+  isSpeedControlledByMud: 0
 --- !u!95 &3563483556735106927
 Animator:
   serializedVersion: 7

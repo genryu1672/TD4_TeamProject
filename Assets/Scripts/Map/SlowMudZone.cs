@@ -8,7 +8,7 @@ public class SlowMudZone : MonoBehaviour
     public float slowForwardSpeed = 10.0f;
 
     [Header("沼に乗った時の減速スピード (値を大きくするほど一瞬でガクッと落ちる)")]
-    public float decelerationSpeed = 120.0f;
+    public float decelerationSpeed = 200.0f;
 
     [Header("減速した状態を維持する時間 (秒) (※沼の上から降りた後はすぐ加速します)")]
     public float slowDuration = 2.0f;
